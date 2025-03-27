@@ -1,0 +1,2 @@
+//download react icons on terminal
+npm i react-icons
