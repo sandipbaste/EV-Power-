@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ApplicationForm = () => {
+
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -11,7 +13,7 @@ const ApplicationForm = () => {
     email: '',
     graduation: '',
     cgpa: '',
-    position: 'Electric Engineer',
+    position: '',
     resume: null,
     isExperienced: false,
     experiences: [{
@@ -41,6 +43,7 @@ const ApplicationForm = () => {
       ...prev,
       [name]: type === 'file' ? files[0] : value
     }));
+
   };
 
   const handleCheckboxChange = (e) => {
@@ -132,10 +135,11 @@ const ApplicationForm = () => {
   
   const handleSubmit = ()=>{
     console.log(formData)
-    const data = localStorage.getItem(formData)
-    if(!data){
-      localStorage.setItem(formData, JSON.stringify(formData))
-    }
+    const data = localStorage.getItem(formData.email)
+    {!data && parseFloat(formData.cgpa)>6 && formData.resume && formData.position 
+    ? localStorage.setItem(formData.email, JSON.stringify(formData)) : ''}
+    
+    navigate('/form-respones')
   }
 
   return (
@@ -335,6 +339,7 @@ const ApplicationForm = () => {
             value={formData.position}
             onChange={handleChange}
           >
+            <option value="" disabled>Select</option>
             <option value="Electric Engineer">Electric Engineer</option>
             <option value="Software Engineer">Software Engineer</option>
             <option value="EV Designer Engineer">EV Designer Engineer</option>
@@ -505,7 +510,7 @@ const ApplicationForm = () => {
         )}
         
         {/* Submit Button */}
-        <Link to="/form-respones"
+        <button
           type="submit"
           disabled={!isFormValid}
           onClick={handleSubmit}
@@ -517,7 +522,7 @@ const ApplicationForm = () => {
           }`}
         >
           Submit Application
-        </Link>
+        </button>
       </div>
     </div>
   );
