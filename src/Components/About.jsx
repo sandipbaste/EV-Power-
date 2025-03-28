@@ -1,5 +1,4 @@
 import React from "react";
-// import img from '../assets/pexels-ali-akdemir-2055469759-30278476.jpg'
 import img from '../assets/Client_Fold-4-desk.png'
 import { FileText, BrainCircuit, MessagesSquare, Handshake } from 'lucide-react';
 import { Linkedin, Twitter, Mail } from 'lucide-react';
