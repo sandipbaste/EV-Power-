@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const ApplicationForm = () => {
   const [formData, setFormData] = useState({
@@ -129,6 +130,13 @@ const ApplicationForm = () => {
     ))
   );
   
+  const handleSubmit = ()=>{
+    console.log(formData)
+    const data = localStorage.getItem(formData)
+    if(!data){
+      localStorage.setItem(formData, JSON.stringify(formData))
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -497,9 +505,10 @@ const ApplicationForm = () => {
         )}
         
         {/* Submit Button */}
-        <button 
+        <Link to="/form-respones"
           type="submit"
           disabled={!isFormValid}
+          onClick={handleSubmit}
           className={`w-full py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors mb-4 ${
             isFormValid 
               ? 'bg-blue-600 text-white hover:bg-blue-700' 
@@ -507,7 +516,7 @@ const ApplicationForm = () => {
           }`}
         >
           Submit Application
-        </button>
+        </Link>
       </div>
     </div>
   );
