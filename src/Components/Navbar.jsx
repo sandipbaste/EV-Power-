@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolling, setScrolling] = useState(false);
@@ -34,17 +35,18 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex gap-8 text-base font-semibold text-[#413c69]">
-          <li><a href="#" className="hover:text-blue-600">Home</a></li>
-          <li><a href="#" className="hover:text-blue-600">About</a></li>
-          <li><a href="#" className="hover:text-blue-600">Job Openings</a></li>
-          <li><a href="#" className="hover:text-blue-600">Employee Benefits</a></li>
-          <li><a href="#" className="hover:text-blue-600">Joining Process</a></li>
+          <li><Link to="/" className="hover:text-blue-600">Home</Link></li>
+          <li><Link to="/about" className="hover:text-blue-600">About</Link></li>
+          <li><Link to="#" className="hover:text-blue-600">Job Openings</Link></li>
+          <li><Link to="#" className="hover:text-blue-600">Employee Benefits</Link></li>
+          <li><Link to="#" className="hover:text-blue-600">Joining Process</Link></li>
         </ul>
 
         {/* Login Button */}
-        <button className="hidden md:block bg-[#FFD700] text-black px-4 py-2 rounded-lg shadow-md hover:bg-yellow-500 transition-all duration-300">
-          Login
-        </button>
+        <Link
+        to='/join-us' className="hidden md:block bg-[#FFD700] text-black px-4 py-2 rounded-lg shadow-md hover:bg-yellow-500 transition-all duration-300">
+          JoinUs
+        </Link>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden">
