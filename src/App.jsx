@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ApplicationForm from './Components/ApplicationForm'
 import OnlineTest from './OnlineTest'
 import About from './Components/About'
+import Footer from './Components/Footer'
 const App = () => {
   return (
     <>
@@ -17,6 +18,7 @@ const App = () => {
             <Route exact path='/about' element={ <About/> } />
             <Route exact path='/join-us' element={<ApplicationForm/>}/>
           </Routes>
+          <Footer/> 
         </BrowserRouter>
       </div>
     </>

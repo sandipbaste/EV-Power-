@@ -1,7 +1,6 @@
 import React from "react";
 import img from '../assets/Client_Fold-4-desk.png'
 import { FileText, BrainCircuit, MessagesSquare, Handshake } from 'lucide-react';
-import { Linkedin, Twitter, Mail } from 'lucide-react';
 
 const About = () => {
     return (
@@ -149,12 +148,6 @@ const About = () => {
                         <h2 className="text-3xl font-bold text-blue-700 mb-4">
                             Get in Touch
                         </h2>
-                        <p className="text-lg text-gray-600">
-                            Have questions? Reach out to us for more information.
-                        </p>
-                        <button className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-all duration-300">
-                            Contact Us
-                        </button>
                     </section>
                 </div>
             </div>
