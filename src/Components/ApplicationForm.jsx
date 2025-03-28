@@ -30,8 +30,8 @@ const ApplicationForm = () => {
     email: false,
     graduation: false,
     cgpa: false,
-    companyName0: false,
-    position0: false
+    companyName: false,
+    position: false
   });
 
   const handleChange = (e) => {
@@ -128,6 +128,7 @@ const ApplicationForm = () => {
       exp.companyName && exp.position && exp.durationFrom
     ))
   );
+  
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">

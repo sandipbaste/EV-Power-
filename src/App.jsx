@@ -1,12 +1,20 @@
 import React from 'react'
-import ApplicationForm from './Components/ApplicationForm'
-import OnlineTest from './Components/OnlineTest'
+import Layout from './Components/Layout'
+import HomeSection from './Components/HomeSection'
+// import ApplicationForm from './Components/ApplicationForm'
+// import OnlineTest from './OnlineTest'
 
 const App = () => {
   return (
     <>
-      <ApplicationForm/>
-      <OnlineTest/>
+      {/* <ApplicationForm/>
+      <OnlineTest/> */}
+      <Layout/>
+      <HomeSection/>
+
+      <div className="">
+        
+      </div>
     </>
 
   )
