@@ -5,7 +5,8 @@ import HomeSection from './HomeSection'
 const Layout = () => {
   return (
     <>
-    <Navbar /> 
+    <Navbar />
+   
     </>
   )
 }

@@ -7,6 +7,7 @@ import OnlineTest from './OnlineTest'
 import About from './Components/About'
 import EmployeeBenefits from './Components/EmployeeBenefits'
 import FormResponce from './Components/FormResponce'
+import Footer from './Components/Footer'
 const App = () => {
   return (
     <>
@@ -21,6 +22,7 @@ const App = () => {
             <Route exact path='/join-us' element={<ApplicationForm/>}/>
             <Route exact path='/form-respones' element={ <FormResponce/> }/>
           </Routes>
+          <Footer/> 
         </BrowserRouter>
       </div>
     </>
