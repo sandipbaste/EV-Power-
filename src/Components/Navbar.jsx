@@ -46,7 +46,7 @@ const Navbar = () => {
           <div className={`text-2xl font-extrabold text-blue-700 transition-all duration-300 ${
             scrolling ? "text-xl" : "text-2xl"
           }`}>
-            EV POWER
+            <Link to='/'>EV POWER</Link>
           </div>
 
           {/* Desktop Menu */}
