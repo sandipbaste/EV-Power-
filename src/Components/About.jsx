@@ -72,7 +72,7 @@ const About = () => {
                             ))}
                         </div>
                     </section>
-
+                    
                     {/* Hiring Process */}
                     <section className="mb-12 animate-fade-in">
                         <h2 className="text-3xl font-bold text-center mb-8 text-blue-700">

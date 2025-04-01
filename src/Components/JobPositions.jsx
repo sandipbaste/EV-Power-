@@ -24,7 +24,7 @@ const JobPositions = () => {
       details: "Experience: 2+ Years | Location: Remote",
     },
   ];
-
+  
   // Additional job positions
   const additionalJobs = [
     {
