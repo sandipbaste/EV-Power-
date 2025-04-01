@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
 const ApplicationForm = () => {
+  const navigate = useNavigate();
+  
+  // State to track existing data from localStorage
+  const [fresherDataArray, setFresherDataArray] = useState([]);
+  const [experienceDataArray, setExperienceDataArray] = useState([]);
 
-  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -25,6 +29,19 @@ const ApplicationForm = () => {
     }]
   });
 
+  useEffect(() => {
+    // Get existing data from localStorage
+    const fresherData = localStorage.getItem('fresherDataArray');
+    if (fresherData) {
+      setFresherDataArray(JSON.parse(fresherData));
+    }
+    
+    const experienceData = localStorage.getItem('experienceDataArray');
+    if (experienceData) {
+      setExperienceDataArray(JSON.parse(experienceData));
+    }
+  }, []);
+
   const [fieldFocused, setFieldFocused] = useState({
     firstName: false,
     lastName: false,
@@ -43,7 +60,6 @@ const ApplicationForm = () => {
       ...prev,
       [name]: type === 'file' ? files[0] : value
     }));
-
   };
 
   const handleCheckboxChange = (e) => {
@@ -112,14 +128,16 @@ const ApplicationForm = () => {
   };
 
   const handleBlur = (field) => {
-    setFieldFocused(prev => ({
-      ...prev,
-      [field]: false
-    }));
+    if (!formData[field]) {
+      setFieldFocused(prev => ({
+        ...prev,
+        [field]: false
+      }));
+    }
   };
 
-  // Basic validation for required fields
-  const isFormValid = (
+  // Validation for basic required fields (common for both fresher and experienced)
+  const isBasicInfoValid = (
     formData.firstName &&
     formData.lastName &&
     formData.address &&
@@ -128,19 +146,48 @@ const ApplicationForm = () => {
     formData.graduation &&
     formData.cgpa &&
     formData.position &&
-    (!formData.isExperienced || formData.experiences.every(exp => 
-      exp.companyName && exp.position && exp.durationFrom
-    ))
+    formData.resume
   );
+
+  // Additional validation for experience fields if the user is experienced
+  const isExperienceValid = !formData.isExperienced || formData.experiences.every(exp => 
+    exp.companyName && exp.position && exp.durationFrom
+  );
+
+  // Overall form validation
+  const isFormValid = isBasicInfoValid && isExperienceValid;
   
-  const handleSubmit = ()=>{
-    console.log(formData)
-    const data = localStorage.getItem(formData.email)
-    {!data && parseFloat(formData.cgpa)>6 && formData.resume && formData.position 
-    ? localStorage.setItem(formData.email, JSON.stringify(formData)) : ''}
-    
-    navigate('/form-respones')
-  }
+  const handleSubmit = () => {
+    // Create a copy of formData that we can store (remove the File object which can't be JSON stringified)
+    const formDataToStore = {
+      ...formData,
+      resume: formData.resume ? formData.resume.name : null
+    };
+
+    if (isBasicInfoValid) {
+      if (formData.isExperienced) {
+        // Check if experience fields are filled
+        const isExperienceComplete = formData.experiences.some(exp => 
+          exp.companyName && exp.position && exp.durationFrom
+        );
+        
+        if (isExperienceComplete) {
+          // Store in experienceDataArray
+          const newExperienceData = [...experienceDataArray, formDataToStore];
+          localStorage.setItem('experienceDataArray', JSON.stringify(newExperienceData));
+          setExperienceDataArray(newExperienceData);
+        }
+      } else {
+        // Store in fresherDataArray
+        const newFresherData = [...fresherDataArray, formDataToStore];
+        localStorage.setItem('fresherDataArray', JSON.stringify(newFresherData));
+        setFresherDataArray(newFresherData);
+      }
+      
+      // Navigate to the response page
+      navigate('/form-respones');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -518,7 +565,6 @@ const ApplicationForm = () => {
             isFormValid 
               ? 'bg-blue-600 text-white hover:bg-blue-700' 
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-
           }`}
         >
           Submit Application
