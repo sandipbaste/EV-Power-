@@ -22,7 +22,6 @@ const FormResponse = ({ onClose }) => {
 
   return (
     <>
-      
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full mx-4">
           <div className="flex flex-col items-center">
