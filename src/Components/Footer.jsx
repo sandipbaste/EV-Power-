@@ -9,7 +9,7 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-2xl font-extrabold text-blue-600">EV POWER</h3>
             <p className="text-gray-500 text-xl">
-             "Empowering the future with clean energy solutions and sustainable transportation."
+              "Empowering the future with clean energy solutions and sustainable transportation."
             </p>
           </div>
           {/* Quick Links */}
@@ -39,7 +39,7 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-black">Careers</h4>
             <ul className="space-y-2 text-[#413c69]">
               <li>
-                <Link to="#" className="text-black-300 hover:text-blue-600 transition-colors">
+               <Link to="#" className="text-black-300 hover:text-blue-600 transition-colors">
                   Job Openings
                 </Link>
               </li>
@@ -62,7 +62,7 @@ const Footer = () => {
             <address className="text-[#413c69] not-italic ">
               <p className="hover:text-blue-600 ">123 Energy Street</p>
               <p className="hover:text-blue-600 ">San Francisco, CA 94107</p>
-              <p  className="mt-2 hover:text-blue-600 ">Email: info@evpower.com</p>
+              <p className="mt-2 hover:text-blue-600 ">Email: info@evpower.com</p>
               <p className=" hover:text-blue-600 ">Phone: (+91) 456-7890579</p>
             </address>
           </div>
