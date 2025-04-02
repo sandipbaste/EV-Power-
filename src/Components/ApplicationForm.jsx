@@ -151,7 +151,7 @@ const ApplicationForm = () => {
 
   // Additional validation for experience fields if the user is experienced
   const isExperienceValid = !formData.isExperienced || formData.experiences.every(exp => 
-    exp.companyName && exp.position && exp.durationFrom
+    exp.companyName && exp.position && exp.durationFrom && exp.workModule
   );
 
   // Overall form validation
@@ -360,7 +360,7 @@ const ApplicationForm = () => {
             </label>
             <input
               id="cgpa"
-              type="text"
+              type="number"
               name="cgpa"
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               onFocus={() => handleFocus('cgpa')}
