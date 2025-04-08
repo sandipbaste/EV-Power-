@@ -5,7 +5,7 @@ import { FileText, BrainCircuit, MessagesSquare, Handshake } from 'lucide-react'
 const About = () => {
     return (
         <>
-            <div className="bg-gray-50 py-12">
+            <div className="bg-gray-50">
                 <div className="container mx-auto px-6 lg:px-20">
                     {/* Hero Section */}
                     <section className="text-center mb-12 animate-fade-in">
