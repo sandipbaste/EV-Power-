@@ -6,7 +6,7 @@ import JobPositions from "./JobPositions";
 const HomeSection = () => {
   return (
     <>
-    <HeroSection />
+    <HeroSection /> 
     <CardSection />
     <JobPositions />
     </>

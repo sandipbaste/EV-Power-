@@ -1,5 +1,5 @@
 import React from "react";
-import img from '../assets/Client_Fold-4-desk.png'
+import img from '../assets/car1.png'
 import { FileText, BrainCircuit, MessagesSquare, Handshake } from 'lucide-react';
 
 const About = () => {
