@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 const ExperienceForm = () => {
 
-  const {id,title,details} = useParams()
+  const {title, details} = useParams()
   const [formData, setFormData] = useState({
     isExperienced: false,
     experiences: [{

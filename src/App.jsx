@@ -14,7 +14,6 @@ const App = () => {
   return (
     <>
       <div className="">
-<<<<<<< HEAD
         <BrowserRouter>
           <Layout />
           <Routes>
@@ -26,18 +25,6 @@ const App = () => {
             <Route exact path='/form-respones' element={<FormResponce />} />
             <Route path="/" element={<JobPositions />} />
             <Route path="/experience-form/:title/:details" element={<ExperienceForm />} />
-=======
-        <BrowserRouter> 
-        <Layout/>
-          <Routes>
-            <Route exact path='/' element={<HomeSection/>}/>
-            <Route exact path='/onlinetest' element={<OnlineTest/>}/>
-            <Route exact path='/about' element={ <About/> } />
-            <Route exact path='/emp-benefits' element={ <EmployeeBenefits/> } />
-            <Route exact path='/join-us' element={<ApplicationForm/>}/>
-            <Route exact path='/form-respones' element={ <FormResponce/> }/>
-            
->>>>>>> main
           </Routes>
           <Footer />
         </BrowserRouter>
