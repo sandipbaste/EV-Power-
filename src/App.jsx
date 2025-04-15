@@ -24,7 +24,7 @@ const App = () => {
             <Route exact path='/join-us' element={<ApplicationForm />} />
             <Route exact path='/form-respones' element={<FormResponce />} />
             <Route path="/" element={<JobPositions />} />
-            <Route path="/experience-form/:title/:details" element={<ExperienceForm />} />
+            <Route path="/experience-form/:title/:details/:location" element={<ExperienceForm />} />
           </Routes>
           <Footer />
         </BrowserRouter>

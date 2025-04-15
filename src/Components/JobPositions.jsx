@@ -1,23 +1,27 @@
 import React, { useState } from "react";
 import { Briefcase, MapPin, Clock } from "lucide-react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const JobPositions = () => {
+  const navigate = useNavigate()
   const initialJobs = [
     {
       id: 1,
       title: "Software Engineer",
-      details: "Experience: 2+ Years | Location: Remote",
+      details: "Experience: 2+ Years",
+      location: "Pune"
     },
     {
       id: 2,
       title: "Battery Technician",
-      details: "Experience: 1+ Years | Location: On-site",
+      details: "Experience: 1+ Years",
+      location: "Chennai"
     },
     {
       id: 3,
       title: "HR Manager",
-      details: "Experience: 3+ Years | Location: Hybrid",
+      details: "Experience: 3+ Years",
+      location: "Mumbai"
     },
     
   ];
@@ -26,43 +30,43 @@ const JobPositions = () => {
     {
       id: 4,
       title: "Marketing Specialist",
-      details: "Experience: 2+ Years | Location: Remote",
+      details: "Experience: 2+ Years" ,
+      location: "Banglore",
     },
     {
       id: 5,
       title: "Electrical Engineer",
-      details: "Experience: 3+ Years | Location: On-site",
+      details: "Experience: 3+ Years",
+       location: "Pune"
     },
     {
       id: 6,
       title: "Customer Support",
-      details: "Experience: 1+ Years | Location: Remote",
+      details: "Experience: 1+ Years",
+      location: "Nashik"
     },
     {
       id: 7,
       title: "Sales Executive",
-      details: "Experience: 2+ Years | Location: Hybrid",
+      details: "Experience: 2+ Years",
+      location: "Nashik"
     },
     {
       id: 8,
       title: "Data Analyst",
-      details: "Experience: 2+ Years | Location: Remote",
+      details: "Experience: 2+ Years",
+      location: "Pune"
     },
     {
       id: 9,
       title: "Data Analyst",
-      details: "Experience: 2+ Years | Location: Remote",
+      details: "Experience: 2+ Years",
+      location: "Delhi"
     },
   ];
 
   const [showAllJobs, setShowAllJobs] = useState(false);
   const [jobs, setJobs] = useState(initialJobs);
-
-  const navigate = useNavigate();
-
-  const handleApplyNow= (title,details)=>{
-    navigate(`/experience-form/${title}/${details}`)
-  } 
 
   const toggleJobs = () => {
     if (showAllJobs) {
@@ -72,6 +76,10 @@ const JobPositions = () => {
     }
     setShowAllJobs(!showAllJobs);
   };
+
+  const handleApplyNow = (title, details, location) =>{
+    navigate(`/experience-form/${title}/${details}/${location}`)
+  }
 
   return (
     <section className="bg-white py-16 text-gray-900">
@@ -100,7 +108,7 @@ const JobPositions = () => {
                   <span>{job.details.split("|")[1]}</span>
                 </div>
               </div>
-              <button onClick={()=>{handleApplyNow(job.title, job.details)}} className="w-full bg-[#1e293b] hover:bg-[#334155] text-[#FFD700] font-semibold py-2 rounded-lg shadow-md transition duration-300">
+              <button onClick={()=>handleApplyNow(job.title, job.details, job.location)} className="w-full bg-[#1e293b] hover:bg-[#334155] text-[#FFD700] font-semibold py-2 rounded-lg shadow-md transition duration-300">
                 Apply Now
               </button>
             </div>
