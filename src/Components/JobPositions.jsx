@@ -101,11 +101,11 @@ const JobPositions = () => {
               <div className="text-sm text-gray-700 flex flex-col gap-2 mb-6">
                 <div className="flex items-center gap-2">
                   <Clock size={16} className="text-[#1e293b]" />
-                  <span>{job.details.split("|")[0]}</span>
+                  <span>{job.details}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin size={16} className="text-[#1e293b]" />
-                  <span>{job.details.split("|")[1]}</span>
+                  <span>{job.location}</span>
                 </div>
               </div>
               <button onClick={()=>handleApplyNow(job.title, job.details, job.location)} className="w-full bg-[#1e293b] hover:bg-[#334155] text-[#FFD700] font-semibold py-2 rounded-lg shadow-md transition duration-300">
