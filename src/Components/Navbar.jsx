@@ -36,10 +36,10 @@ const Navbar = () => {
 
   return (
     <>
-      <nav
-        className={`sticky top-0 w-full z-50 bg-navy py-3 text-white shadow-lg transition-all duration-300 ${
-          scrolling ? "py-4 shadow-md" : "p-4"
-        }`}
+      <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+          scrolling ? 'bg-navy backdrop-blur-md shadow-lg py-3' : 'bg-navy py-4'
+        } text-white`}
+
       >
         <div className="flex justify-between items-center px-6">
           {/* Logo */}
@@ -51,15 +51,15 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <ul className="hidden md:flex gap-8 text-base font-semibold ">
-            <li><Link to="/" className="hover:text-gold">Home</Link></li>
-            <li><Link to="/about" className="hover:text-gold">About</Link></li>
-            <li><Link to="/emp-benefits" className="hover:text-gold">Employee Benefits</Link></li>
+            <li><Link to="/" className="hover:text-blue-200">Home</Link></li>
+            <li><Link to="/about" className="hover:text-blue-200">About</Link></li>
+            <li><Link to="/emp-benefits" className="hover:text-blue-200">Employee Benefits</Link></li>
           </ul>
 
           {/* Login Button */}
           <Link
             to='/join-us' 
-            className="hidden md:block bg-gold text-black px-4 py-2 rounded-lg shadow-md hover:bg-yellow-500 transition-all duration-300"
+            className="hidden md:block bg-gradient-to-r from-blue-300 to-blue-400 text-navy font-bold px-4 py-2 rounded-lg shadow-md hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
           >
             JoinUs
           </Link>
@@ -100,7 +100,7 @@ const Navbar = () => {
               <li>
                 <Link 
                   to="/" 
-                  className="block py-2 hover:text-gold"
+                  className="block py-2 hover:text-blue-100"
                   onClick={closeMobileMenu}
                 >
                   Home
@@ -109,7 +109,7 @@ const Navbar = () => {
               <li>
                 <Link 
                   to="/about" 
-                  className="block py-2 hover:text-gold"
+                  className="block py-2 hover:text-blue-100"
                   onClick={closeMobileMenu}
                 >
                   About
@@ -118,7 +118,7 @@ const Navbar = () => {
               <li>
                 <Link 
                   to="/emp-benefits" 
-                  className="block py-2 hover:text-gold"
+                  className="block py-2 hover:text-blue-100"
                   onClick={closeMobileMenu}
                 >
                   Employee Benefits
@@ -129,7 +129,7 @@ const Navbar = () => {
             <div className="mt-auto">
               <Link
                 to='/join-us' 
-                className="block w-full text-center bg-gold text-black px-4 py-3 rounded-lg shadow-md hover:bg-yellow-500 transition-all duration-300"
+                className="block w-full text-center bg-gold text-black px-4 py-3 rounded-lg shadow-md hover:bg-blue-500 transition-all duration-300"
                 onClick={closeMobileMenu}
               >
                 JoinUs
