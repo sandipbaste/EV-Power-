@@ -2,57 +2,48 @@ import { useState, useEffect, useRef } from 'react';
 
 const OnlineTest = () => {
   const [questions] = useState([
-    { id: 1, text: "What is 2 + 2?", options: ["3", "4", "5", "6"], answer: "4" },
-    { id: 2, text: "What is the capital of France?", options: ["London", "Berlin", "Paris", "Madrid"], answer: "Paris" },
-    { id: 3, text: "Which planet is known as the Red Planet?", options: ["Earth", "Mars", "Venus", "Jupiter"], answer: "Mars" },
-    { id: 4, text: "What is the square root of 16?", options: ["2", "3", "4", "5"], answer: "4" },
-    { id: 5, text: "How many continents are there?", options: ["5", "6", "7", "8"], answer: "7" },
-    { id: 6, text: "Who wrote 'Romeo and Juliet'?", options: ["Shakespeare", "Hemingway", "Austen", "Dickens"], answer: "Shakespeare" },
-    { id: 7, text: "What is 5 x 5?", options: ["10", "20", "25", "30"], answer: "25" },
-    { id: 8, text: "Which is the largest ocean?", options: ["Atlantic", "Indian", "Pacific", "Arctic"], answer: "Pacific" },
-    { id: 9, text: "Who invented the light bulb?", options: ["Newton", "Edison", "Tesla", "Bell"], answer: "Edison" },
-    { id: 10, text: "What is the chemical symbol for water?", options: ["O2", "H2O", "CO2", "NaCl"], answer: "H2O" },
-    { id: 11, text: "Which is the longest river in the world?", options: ["Amazon", "Nile", "Ganges", "Yangtze"], answer: "Nile" },
-    { id: 12, text: "What is 9 x 9?", options: ["81", "72", "90", "99"], answer: "81" },
-    { id: 13, text: "Which gas do plants absorb from the atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], answer: "Carbon Dioxide" },
-    { id: 14, text: "What is the capital of Japan?", options: ["Seoul", "Beijing", "Bangkok", "Tokyo"], answer: "Tokyo" },
-    { id: 15, text: "Who painted the Mona Lisa?", options: ["Van Gogh", "Da Vinci", "Picasso", "Michelangelo"], answer: "Da Vinci" },
-    { id: 16, text: "What is 12 x 12?", options: ["124", "144", "132", "120"], answer: "144" },
-    { id: 17, text: "Which is the smallest planet in the solar system?", options: ["Mercury", "Venus", "Mars", "Earth"], answer: "Mercury" },
-    { id: 18, text: "How many sides does a hexagon have?", options: ["5", "6", "7", "8"], answer: "6" },
-    { id: 19, text: "Who discovered gravity?", options: ["Einstein", "Newton", "Galileo", "Darwin"], answer: "Newton" },
-    { id: 20, text: "What is the capital of India?", options: ["Mumbai", "Delhi", "Kolkata", "Chennai"], answer: "Delhi" },
-    { id: 21, text: "How many legs does a spider have?", options: ["6", "8", "10", "12"], answer: "8" },
-    { id: 22, text: "What is the boiling point of water in Celsius?", options: ["90", "100", "120", "150"], answer: "100" },
-    { id: 23, text: "Which bird is known for its ability to mimic human speech?", options: ["Sparrow", "Parrot", "Crow", "Eagle"], answer: "Parrot" },
-    { id: 24, text: "What is 7 x 7?", options: ["42", "48", "49", "56"], answer: "49" },
-    { id: 25, text: "Who is known as the Father of Computers?", options: ["Charles Babbage", "Alan Turing", "Ada Lovelace", "Bill Gates"], answer: "Charles Babbage" },
-    { id: 26, text: "Which is the largest mammal?", options: ["Elephant", "Blue Whale", "Giraffe", "Shark"], answer: "Blue Whale" },
-    { id: 27, text: "What is the capital of the USA?", options: ["New York", "Los Angeles", "Washington D.C.", "Chicago"], answer: "Washington D.C." },
-    { id: 28, text: "What is the value of π (pi)?", options: ["3.14", "2.71", "1.61", "4.13"], answer: "3.14" },
-    { id: 29, text: "Which country is known as the Land of the Rising Sun?", options: ["China", "India", "Japan", "South Korea"], answer: "Japan" },
-    { id: 30, text: "How many planets are in the solar system?", options: ["7", "8", "9", "10"], answer: "8" },
-    { id: 31, text: "What is 8 x 8?", options: ["56", "64", "72", "81"], answer: "64" },
-    { id: 32, text: "Which gas is essential for human breathing?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], answer: "Oxygen" },
-    { id: 33, text: "Who was the first man to step on the moon?", options: ["Neil Armstrong", "Buzz Aldrin", "Yuri Gagarin", "Michael Collins"], answer: "Neil Armstrong" },
-    { id: 34, text: "What is 6 x 6?", options: ["30", "36", "42", "48"], answer: "36" },
-    { id: 35, text: "Which is the smallest continent?", options: ["Asia", "Europe", "Australia", "Antarctica"], answer: "Australia" },
-    { id: 36, text: "Who wrote the Indian national anthem?", options: ["Rabindranath Tagore", "Bankim Chandra", "Subhash Bose", "Mahatma Gandhi"], answer: "Rabindranath Tagore" },
-    { id: 37, text: "What is the chemical symbol for gold?", options: ["Au", "Ag", "Pb", "Fe"], answer: "Au" },
-    { id: 38, text: "How many bones are there in the human body?", options: ["204", "206", "208", "210"], answer: "206" },
-    { id: 39, text: "What is 3 x 3?", options: ["6", "9", "12", "15"], answer: "9" },
-    { id: 40, text: "Which is the national flower of India?", options: ["Rose", "Lotus", "Sunflower", "Jasmine"], answer: "Lotus" },
-    { id: 41, text: "Which animal is known as the Ship of the Desert?", options: ["Horse", "Camel", "Donkey", "Elephant"], answer: "Camel" },
-    { id: 42, text: "What is the capital of Australia?", options: ["Sydney", "Melbourne", "Canberra", "Perth"], answer: "Canberra" },
-    { id: 43, text: "Who invented the telephone?", options: ["Graham Bell", "Edison", "Tesla", "Marconi"], answer: "Graham Bell" },
-    { id: 44, text: "What is the tallest mountain in the world?", options: ["K2", "Kangchenjunga", "Mount Everest", "Makalu"], answer: "Mount Everest" },
-    { id: 45, text: "What is 4 x 4?", options: ["8", "12", "16", "20"], answer: "16" },
-    { id: 46, text: "Which is the largest desert in the world?", options: ["Sahara", "Gobi", "Thar", "Kalahari"], answer: "Sahara" },
-    { id: 47, text: "What is the capital of Russia?", options: ["Moscow", "St. Petersburg", "Kiev", "Astana"], answer: "Moscow" },
-    { id: 48, text: "How many colors are in a rainbow?", options: ["5", "6", "7", "8"], answer: "7" },
-    { id: 49, text: "Which planet is closest to the sun?", options: ["Earth", "Venus", "Mars", "Mercury"], answer: "Mercury" },
-    { id: 50, text: "What is 10 x 10?", options: ["10", "100", "1000", "10000"], answer: "100" },
+    { id: 1, text: "What is the main advantage of EV batteries over traditional gasoline engines?", options: ["Faster acceleration", "Lower emissions", "Higher fuel efficiency", "Longer range"], answer: "Lower emissions" },
+    { id: 2, text: "Which material is commonly used in the production of EV batteries?", options: ["Lithium", "Aluminum", "Iron", "Copper"], answer: "Lithium" },
+    { id: 3, text: "What is the primary component of an EV's powertrain?", options: ["Battery", "Motor", "Transmission", "Fuel cell"], answer: "Battery" },
+    { id: 4, text: "What does the acronym 'EV' stand for?", options: ["Electric Vehicle", "Enhanced Vehicle", "Eco Vehicle", "Energy Vehicle"], answer: "Electric Vehicle" },
+    { id: 5, text: "Which of these companies is known for manufacturing electric vehicles?", options: ["Tesla", "Ford", "Chevrolet", "Toyota"], answer: "Tesla" },
+    { id: 6, text: "What is the typical voltage range for an EV battery?", options: ["12V-24V", "36V-48V", "72V-96V", "300V-800V"], answer: "300V-800V" },
+    { id: 7, text: "What does a 'DC fast charger' do?", options: ["Charges the battery slowly", "Provides a quick charge to the battery", "Discharges the battery", "Charges only at night"], answer: "Provides a quick charge to the battery" },
+    { id: 8, text: "Which technology is crucial for the efficiency of EV charging?", options: ["Solar panels", "Wireless charging", "Regenerative braking", "Active cooling systems"], answer: "Regenerative braking" },
+    { id: 9, text: "Which part of an EV is responsible for regenerative braking?", options: ["Battery", "Motor", "Chassis", "Inverter"], answer: "Motor" },
+    { id: 10, text: "Which is a key challenge in the EV battery supply chain?", options: ["Battery disposal", "Limited raw materials", "Lack of charging stations", "Overproduction of batteries"], answer: "Limited raw materials" },
+    { id: 11, text: "How long does it typically take for a fast charger to fully charge an EV?", options: ["30 minutes", "1 hour", "2 hours", "8 hours"], answer: "30 minutes" },
+    { id: 12, text: "What is one major environmental benefit of electric vehicles?", options: ["Reduced air pollution", "Lower manufacturing cost", "More jobs in fossil fuel industries", "Increased traffic congestion"], answer: "Reduced air pollution" },
+    { id: 13, text: "What is a key consideration when designing an EV for mass-market production?", options: ["Range and charging time", "Color options", "Sound system", "Tire design"], answer: "Range and charging time" },
+    { id: 14, text: "What type of motor is most commonly used in electric vehicles?", options: ["AC induction motor", "DC brushed motor", "Brushless DC motor", "Synchronous motor"], answer: "AC induction motor" },
+    { id: 15, text: "What is one major advantage of using lithium-ion batteries in EVs?", options: ["Low cost", "High energy density", "Ease of recycling", "High voltage tolerance"], answer: "High energy density" },
+    { id: 16, text: "Which factor affects the efficiency of an EV's battery?", options: ["Battery temperature", "Vehicle color", "Type of tires", "Length of charging cable"], answer: "Battery temperature" },
+    { id: 17, text: "Which of these is not a common challenge for EV adoption?", options: ["Battery cost", "Charging infrastructure", "Long refueling times", "Consumer awareness"], answer: "Long refueling times" },
+    { id: 18, text: "What is the primary function of the inverter in an EV?", options: ["Convert AC to DC", "Convert DC to AC", "Control charging speed", "Store energy"], answer: "Convert DC to AC" },
+    { id: 19, text: "How does regenerative braking contribute to EV efficiency?", options: ["By using wind power", "By converting kinetic energy into electrical energy", "By cooling the battery", "By reducing tire wear"], answer: "By converting kinetic energy into electrical energy" },
+    { id: 20, text: "What is the main purpose of the electric vehicle control unit (VCU)?", options: ["Manage the battery charging cycle", "Monitor tire pressure", "Control the electric motor and power distribution", "Cool the motor"], answer: "Control the electric motor and power distribution" },
+    { id: 21, text: "What is one common advantage of EVs over traditional vehicles?", options: ["More expensive to maintain", "Silent operation", "Higher maintenance cost", "Dependence on gasoline"], answer: "Silent operation" },
+    { id: 22, text: "What does 'range anxiety' refer to?", options: ["Fear of running out of charge before reaching a destination", "Fear of the vehicle being too large", "Fear of high fuel costs", "Fear of the battery being too large"], answer: "Fear of running out of charge before reaching a destination" },
+    { id: 23, text: "Which is a key feature of a solid-state battery?", options: ["Low energy density", "Fast charging time", "Increased risk of fire", "No liquid electrolyte"], answer: "No liquid electrolyte" },
+    { id: 24, text: "What role does the battery management system (BMS) play in an EV?", options: ["Manages battery charging and discharging", "Controls the electric motor speed", "Regulates tire pressure", "Increases battery size"], answer: "Manages battery charging and discharging" },
+    { id: 25, text: "What is a major advantage of using solid-state batteries in electric vehicles?", options: ["Lower cost", "Higher energy density", "Slower charging times", "Higher risk of overheating"], answer: "Higher energy density" },
+    { id: 26, text: "Which company is known for developing the first commercially successful electric vehicle?", options: ["Nissan", "Tesla", "Chevrolet", "BMW"], answer: "Tesla" },
+    { id: 27, text: "How does EV adoption help reduce global greenhouse gas emissions?", options: ["By increasing electricity demand", "By reducing dependence on fossil fuels", "By increasing fuel consumption", "By promoting coal energy use"], answer: "By reducing dependence on fossil fuels" },
+    { id: 28, text: "What is the main disadvantage of using an electric vehicle?", options: ["Limited range", "High cost of charging stations", "Availability of fuel", "Lack of electric motors"], answer: "Limited range" },
+    { id: 29, text: "Which company is leading the development of autonomous EV technology?", options: ["Google", "Apple", "Tesla", "General Motors"], answer: "Tesla" },
+    { id: 30, text: "Which of these is not a type of EV charger?", options: ["Level 1", "Level 2", "Level 3", "Supercharger"], answer: "Supercharger" },
+    { id: 31, text: "What is the typical lifespan of an EV battery?", options: ["5-7 years", "10-15 years", "20-25 years", "30-35 years"], answer: "10-15 years" },
+    { id: 32, text: "Which is a key advantage of an electric vehicle over a hybrid vehicle?", options: ["Better fuel efficiency", "Zero tailpipe emissions", "More horsepower", "Cheaper maintenance"], answer: "Zero tailpipe emissions" },
+    { id: 33, text: "What does a hybrid electric vehicle (HEV) use in addition to an electric motor?", options: ["A diesel engine", "A gasoline engine", "A hydrogen fuel cell", "A supercharger"], answer: "A gasoline engine" },
+    { id: 34, text: "What is the main benefit of vehicle-to-grid (V2G) technology?", options: ["Increased battery life", "Bidirectional energy flow between EVs and the grid", "Faster charging", "Lower vehicle weight"], answer: "Bidirectional energy flow between EVs and the grid" },
+    { id: 35, text: "What is the primary function of the power electronics module (PEM) in an EV?", options: ["Control charging cycles", "Manage battery storage", "Convert energy between AC and DC", "Monitor tire pressure"], answer: "Convert energy between AC and DC" },
+    { id: 36, text: "What is one advantage of a fast-charging station for electric vehicles?", options: ["Reduces the need for power distribution", "Allows for charging within 30 minutes or less", "Increases battery degradation", "Requires no infrastructure"], answer: "Allows for charging within 30 minutes or less" },
+    { id: 37, text: "What is a major component of the EV charging infrastructure?", options: ["Solar panels", "Wind turbines", "Charging stations", "Electric grids"], answer: "Charging stations" },
+    { id: 38, text: "Which is an emerging technology in the field of electric vehicle charging?", options: ["Wireless charging", "Hydrogen fuel cells", "Petrol charging stations", "Overhead cable charging"], answer: "Wireless charging" },
+    { id: 39, text: "What is the main reason to adopt electric vehicles in public transport systems?", options: ["Lower operational costs", "Faster passenger service", "Higher energy consumption", "Less frequent charging stations"], answer: "Lower operational costs" },
+    { id: 40, text: "Which renewable energy source is commonly used to charge electric vehicles?", options: ["Solar energy", "Wind energy", "Hydropower", "Geothermal"], answer: "Solar energy" }
   ]);
+  
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -139,7 +130,7 @@ const OnlineTest = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="my-20 bg-gray-100 p-4">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-6">
         {/* Main Question Area */}
         <div className="md:w-2/3 bg-white rounded-lg shadow-lg p-6">
@@ -236,7 +227,7 @@ const OnlineTest = () => {
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Question Navigator</h3>
           {/* Added scrollbar with max height */}
           <div
-            className="grid grid-cols-5 gap-3 overflow-y-auto max-h-[400px] pr-2"
+            className="grid grid-cols-5 gap-3 overflow-y-auto max-h-[400px] p-4"
             style={{ scrollbarWidth: "thin" }}
           >
             {questions.map((q, index) => (
