@@ -1,13 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-const ExperienceForm = () => {
 
-  const { title, details, location } = useParams()
+const ExperienceForm = () => {
+  // Get URL parameters
+  const { title, details, location } = useParams();
+  
+  // Initialize form data from localStorage
+  const [experienceFormData, setExperienceFormData] = useState([]);
+
+  // Load saved data from localStorage on component mount
+  useEffect(() => {
+    const storedExperienceData = localStorage.getItem('experienceFormData');
+    if (storedExperienceData) {
+      try {
+        const parsedData = JSON.parse(storedExperienceData);
+        setExperienceFormData(parsedData);
+      } catch (error) {
+        console.error("Error parsing localStorage data:", error);
+      }
+    }
+  }, []);
+
+  // Initialize form with default values and URL parameters
   const [formData, setFormData] = useState({
-    isExperienced: false,
     experiences: [{
+      location: location || '',  // Include URL parameter
+      position: title || '',     // Include URL parameter
       companyName: '',
-      position: '',
       durationFrom: '',
       durationTo: '',
       workModule: '',
@@ -16,16 +35,15 @@ const ExperienceForm = () => {
       address: '',
       mobile: '',
       email: '',
-      experienceFile: null,  // New field for file upload
+      experienceFile: null,
+      experiance: details || '', // Include URL parameter
     }]
   });
 
+  // Track which fields are focused for floating label effect
+  const [fieldFocused, setFieldFocused] = useState({});
 
-  const [fieldFocused, setFieldFocused] = useState({
-    position: false
-  });
-
-
+  // Handle changes to form fields
   const handleExperienceChange = (index, e) => {
     const { name, value, files } = e.target;
     const updatedExperiences = [...formData.experiences];
@@ -36,6 +54,7 @@ const ExperienceForm = () => {
     }));
   };
 
+  // Handle field focus for floating label effect
   const handleExperienceFocus = (index, field) => {
     setFieldFocused(prev => ({
       ...prev,
@@ -43,6 +62,7 @@ const ExperienceForm = () => {
     }));
   };
 
+  // Handle field blur for floating label effect
   const handleExperienceBlur = (index, field) => {
     if (!formData.experiences[index][field]) {
       setFieldFocused(prev => ({
@@ -52,6 +72,7 @@ const ExperienceForm = () => {
     }
   };
 
+  // Add a new experience section
   const addExperience = () => {
     setFormData(prev => ({
       ...prev,
@@ -59,7 +80,9 @@ const ExperienceForm = () => {
         ...prev.experiences,
         {
           companyName: '',
-          position: '',
+          position: title || '',     // Include URL parameter
+          location: location || '',  // Include URL parameter
+          experiance: details || '', // Include URL parameter
           durationFrom: '',
           durationTo: '',
           workModule: '',
@@ -68,12 +91,13 @@ const ExperienceForm = () => {
           address: '',
           mobile: '',
           email: '',
-          experienceFile: null,  // Add empty file input
+          experienceFile: null,
         }
       ]
     }));
   };
 
+  // Remove an experience section
   const removeExperience = (index) => {
     const updatedExperiences = formData.experiences.filter((_, i) => i !== index);
     setFormData(prev => ({
@@ -83,13 +107,21 @@ const ExperienceForm = () => {
   };
 
   // Basic validation for required fields
-  const isFormValid = formData.experiences.every(exp =>
-    exp.companyName && exp.position && exp.durationFrom
+  const isFormValid = formData.experiences.every(i =>
+    i.firstName && i.lastName && i.mobile && i.email && i.durationFrom && i.durationTo && i.workModule && i.experienceFile
   );
 
+  // Handle form submission
   const handleSubmit = () => {
-    console.log(formData);
-    // You can handle submission here
+    // Store form data directly in localStorage
+    // No need to add URL parameters separately as they are already in each experience object
+    const updatedData = [...experienceFormData, formData];
+    localStorage.setItem('experienceFormData', JSON.stringify(updatedData));
+    
+    // Update state with new data
+    setExperienceFormData(updatedData);
+    console.log('Form submitted:', formData);
+    console.log('All saved experiences:', updatedData);
   };
 
   return (
@@ -98,9 +130,9 @@ const ExperienceForm = () => {
 
         {/* Work Experience Details */}
         <div className="mb-6">
-          <h3 className="text-lg font-medium text-gray-800 mb-4 text-center">Application From</h3>
+          <h3 className="text-lg font-medium text-gray-800 mb-4 text-center">Application Form</h3>
 
-          {formData.experiences.map((exp, index) => (
+          {formData.experiences.map((i, index) => (
             <div key={index} className="mb-6 p-4 border border-gray-200 rounded-lg">
               {index > 0 && (
                 <button
@@ -114,11 +146,11 @@ const ExperienceForm = () => {
               {/* Personal Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
-                {/* {fristname} */}
+                {/* First name */}
                 <div className="relative">
                   <label
                     htmlFor={`firstName-${index}`}
-                    className={`absolute left-3 transition-all duration-200 ${fieldFocused[`firstName${index}`] || exp.firstName ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
+                    className={`absolute left-3 transition-all duration-200 ${fieldFocused[`firstName${index}`] || i.firstName ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
                   >
                     First Name
                   </label>
@@ -129,27 +161,27 @@ const ExperienceForm = () => {
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     onFocus={() => handleExperienceFocus(index, 'firstName')}
                     onBlur={() => handleExperienceBlur(index, 'firstName')}
-                    value={exp.firstName}
+                    value={i.firstName}
                     onChange={(e) => handleExperienceChange(index, e)}
                   />
                 </div>
 
-                {/* {lastname} */}
+                {/* Last name */}
                 <div className="relative">
                   <label
-                      htmlFor={`lastName-${index}`}
-                      className={`absolute left-3 transition-all duration-200 ${fieldFocused[`firstName${index}`] || exp.lastName ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
+                    htmlFor={`lastName-${index}`}
+                    className={`absolute left-3 transition-all duration-200 ${fieldFocused[`lastName${index}`] || i.lastName ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
                   >
                     Last Name
                   </label>
                   <input
-                    id="lastName"
+                    id={`lastName-${index}`}
                     type="text"
                     name="lastName"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     onFocus={() => handleExperienceFocus(index, 'lastName')}
                     onBlur={() => handleExperienceBlur(index, 'lastName')}
-                    value={exp.lastName}
+                    value={i.lastName}
                     onChange={(e) => handleExperienceChange(index, e)}
                   />
                 </div>
@@ -158,20 +190,20 @@ const ExperienceForm = () => {
               {/* Address */}
               <div className="relative mb-6">
                 <label
-                   htmlFor={`address-${index}`}
-                   className={`absolute left-3 transition-all duration-200 ${fieldFocused[`firstName${index}`] || exp.address ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
+                  htmlFor={`address-${index}`}
+                  className={`absolute left-3 transition-all duration-200 ${fieldFocused[`address${index}`] || i.address ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
                 >
                   Address
                 </label>
                 <input
-                  id="address"
+                  id={`address-${index}`}
                   type="text"
                   name="address"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   onFocus={() => handleExperienceFocus(index, 'address')}
-                    onBlur={() => handleExperienceBlur(index, 'address')}
-                    value={exp.address}
-                    onChange={(e) => handleExperienceChange(index, e)}
+                  onBlur={() => handleExperienceBlur(index, 'address')}
+                  value={i.address}
+                  onChange={(e) => handleExperienceChange(index, e)}
                 />
               </div>
 
@@ -180,63 +212,63 @@ const ExperienceForm = () => {
                 {/* Mobile Number */}
                 <div className="relative">
                   <label
-                     htmlFor={`mobile-${index}`}
-                     className={`absolute left-3 transition-all duration-200 ${fieldFocused[`firstName${index}`] || exp.mobile ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
+                    htmlFor={`mobile-${index}`}
+                    className={`absolute left-3 transition-all duration-200 ${fieldFocused[`mobile${index}`] || i.mobile ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
                   >
                     Mobile Number
                   </label>
                   <input
-                    id="mobile"
+                    id={`mobile-${index}`}
                     type="tel"
                     name="mobile"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     onFocus={() => handleExperienceFocus(index, 'mobile')}
                     onBlur={() => handleExperienceBlur(index, 'mobile')}
-                    value={exp.mobile}
+                    value={i.mobile}
                     onChange={(e) => handleExperienceChange(index, e)}
-
                   />
                 </div>
 
                 {/* Email */}
                 <div className="relative">
                   <label
-                  htmlFor={`email-${index}`}
-                  className={`absolute left-3 transition-all duration-200 ${fieldFocused[`email${index}`] || exp.email ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
+                    htmlFor={`email-${index}`}
+                    className={`absolute left-3 transition-all duration-200 ${fieldFocused[`email${index}`] || i.email ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
                   >
                     Email Address
                   </label>
                   <input
-                    id="email"
+                    id={`email-${index}`}
                     type="email"
                     name="email"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     onFocus={() => handleExperienceFocus(index, 'email')}
                     onBlur={() => handleExperienceBlur(index, 'email')}
-                    value={exp.email}
+                    value={i.email}
                     onChange={(e) => handleExperienceChange(index, e)}
                   />
                 </div>
               </div>
 
+              {/* Year of Experience from URL params */}
               <div className="relative mb-4">
-                <label htmlFor={`durationFrom-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                  Experience details
+                <label htmlFor={`experiance-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
+                  Experience
                 </label>
                 <input
                   disabled
-                  id={`companyName-${index}`}
+                  id={`experiance-${index}`}
                   type="text"
-                  name="companyName"
-                  value={details}
+                  name="experiance"
+                  value={i.experiance}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   onChange={(e) => handleExperienceChange(index, e)}
                 />
               </div>
 
-              {/* Position */}
+              {/* Position from URL params */}
               <div className="relative mb-4">
-                <label htmlFor={`durationFrom-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor={`position-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
                   Job Position
                 </label>
                 <input
@@ -245,33 +277,32 @@ const ExperienceForm = () => {
                   type="text"
                   name="position"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={title}
+                  value={i.position}
                   onChange={(e) => handleExperienceChange(index, e)}
                 />
               </div>
-              {/*,location */}
+
+              {/* Location from URL params */}
               <div className="relative mb-4">
-                <label htmlFor={`durationFrom-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor={`location-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
                   Location
                 </label>
                 <input
                   disabled
-                  id={`position-${index}`}
+                  id={`location-${index}`}
                   type="text"
-                  name="position"
+                  name="location"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={location}
-
+                  value={i.location}
                   onChange={(e) => handleExperienceChange(index, e)}
                 />
               </div>
-
 
               {/* Company Name */}
               <div className="relative mb-4">
                 <label
                   htmlFor={`companyName-${index}`}
-                  className={`absolute left-3 transition-all duration-200 ${fieldFocused[`companyName${index}`] || exp.companyName ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
+                  className={`absolute left-3 transition-all duration-200 ${fieldFocused[`companyName${index}`] || i.companyName ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
                 >
                   Company Name
                 </label>
@@ -282,7 +313,7 @@ const ExperienceForm = () => {
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   onFocus={() => handleExperienceFocus(index, 'companyName')}
                   onBlur={() => handleExperienceBlur(index, 'companyName')}
-                  value={exp.companyName}
+                  value={i.companyName}
                   onChange={(e) => handleExperienceChange(index, e)}
                 />
               </div>
@@ -298,7 +329,7 @@ const ExperienceForm = () => {
                     type="date"
                     name="durationFrom"
                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={exp.durationFrom}
+                    value={i.durationFrom}
                     onChange={(e) => handleExperienceChange(index, e)}
                   />
                 </div>
@@ -313,7 +344,7 @@ const ExperienceForm = () => {
                     type="date"
                     name="durationTo"
                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={exp.durationTo}
+                    value={i.durationTo}
                     onChange={(e) => handleExperienceChange(index, e)}
                   />
                 </div>
@@ -322,14 +353,14 @@ const ExperienceForm = () => {
               {/* Work Module */}
               <div className="mb-4">
                 <label htmlFor={`workModule-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                  Work Module/Description
+                  Work Description
                 </label>
                 <textarea
                   id={`workModule-${index}`}
                   name="workModule"
                   rows="4"
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={exp.workModule}
+                  value={i.workModule}
                   onChange={(e) => handleExperienceChange(index, e)}
                   placeholder="Describe your work responsibilities and achievements"
                 />
@@ -348,7 +379,7 @@ const ExperienceForm = () => {
                   onChange={(e) => handleExperienceChange(index, e)}
                   accept=".pdf,.doc,.docx"
                 />
-                {exp.experienceFile && <span className="text-sm text-gray-500 mt-2">{exp.experienceFile.name}</span>}
+                {i.experienceFile && <span className="text-sm text-gray-500 mt-2">{i.experienceFile.name}</span>}
               </div>
             </div>
           ))}
@@ -375,4 +406,5 @@ const ExperienceForm = () => {
     </div>
   );
 };
+
 export default ExperienceForm;
