@@ -23,8 +23,8 @@ const fresherForm = sequelize.define(
             allowNull: false,
         },
         mobile: {
-            type: DataTypes.STRING(50), 
-            allowNull: true ,
+            type: DataTypes.STRING(12), 
+            allowNull: false,
             validate: { is: /^\+?[0-9]{10,15}$/ },
         },
         email: {

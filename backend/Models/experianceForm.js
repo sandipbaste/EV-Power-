@@ -23,7 +23,7 @@ const experianceForm = sequelize.define(
             allowNull: false,
         },
         mobile: {
-            type: DataTypes.STRING(50), 
+            type: DataTypes.STRING(12), 
             allowNull: true ,
             validate: { is: /^\+?[0-9]{10,15}$/ },
         },
@@ -64,6 +64,9 @@ const experianceForm = sequelize.define(
             type: DataTypes.BLOB('long'),
             allowNull: false,
         }, 
+    },
+    {
+        tableName: 'experiance_form'
     }
 )
 

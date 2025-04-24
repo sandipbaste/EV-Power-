@@ -3,7 +3,7 @@ const sequelize = require("../config/db.config");
 const fresherForm = require('./fresherForm')
 
 const expForm = sequelize.define(
-  "exp_form",
+  "exp_online_form",
     {
         id: {
             type: DataTypes.BIGINT,
@@ -41,6 +41,6 @@ const expForm = sequelize.define(
     }
 );
 
-expForm.belongsTo(fresherOnlineForm, {foreignKey: 'fres_id'})
+expForm.belongsTo(fresherForm, {foreignKey: 'fres_id'})
 
 module.exports = expForm;
