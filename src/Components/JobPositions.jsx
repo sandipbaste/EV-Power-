@@ -4,17 +4,17 @@ import { Link, useNavigate } from "react-router-dom";
 const JobPositions = () => {
   // Initial job positions
   const initialJobs = [
-    { id: 1, title: "Software Engineer", details: "Experience: 2+ Years" , location: "Remote" },
+    { id: 1, title: "Software Engineer", details: "Experience: 2+ Years", location: "Remote" },
     { id: 2, title: "Battery Technician", details: "Experience: 1+ Years", location: "On-site" },
-    { id: 3, title: "HR Manager", details: "Experience: 3+ Years" , location: "Hybrid" },
-    { id: 4, title: "Marketing Specialist", details: "Experience: 2+ Years",  location: "Remote" },
+    { id: 3, title: "HR Manager", details: "Experience: 3+ Years", location: "Hybrid" },
+    { id: 4, title: "Marketing Specialist", details: "Experience: 2+ Years", location: "Remote" },
   ]
 
   // Additional job positions
   const additionalJobs = [
-    { id: 5, title: "Electrical Engineer", details: "Experience: 3+ Years", location:" On-site" },
-    { id: 6, title: "Customer Support", details: "Experience: 1+ Years" , location: "Remote" },
-    { id: 7, title: "Sales Executive", details: "Experience: 2+ Years ", location:" Hybrid" },
+    { id: 5, title: "Electrical Engineer", details: "Experience: 3+ Years", location: " On-site" },
+    { id: 6, title: "Customer Support", details: "Experience: 1+ Years", location: "Remote" },
+    { id: 7, title: "Sales Executive", details: "Experience: 2+ Years ", location: " Hybrid" },
     { id: 8, title: "Data Analyst", details: "Experience: 2+ Years ", location: "Remote" },
   ];
 
@@ -23,7 +23,7 @@ const JobPositions = () => {
 
   const navigate = useNavigate()
 
-  const handleApplyNow= (title,details,location)=>{
+  const handleApplyNow = (title, details, location) => {
     navigate(`/experience-form/${title}/${details}/${location}`)
   }
 
@@ -54,7 +54,7 @@ const JobPositions = () => {
               <p className="text-gray-700">{job.location}</p>
             </div>
             <button
-            onClick={()=> handleApplyNow(job.title,job.details,job.location)}
+              onClick={() => handleApplyNow(job.title, job.details, job.location)}
               className="bg-gradient-to-r bg-[#FFD700] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 text-black px-4 py-2 rounded-lg shadow-md w-full md:w-auto"
             >
               Apply Now
