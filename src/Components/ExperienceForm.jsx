@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 const ExperienceForm = () => {
   // Get URL parameters
   const { title, details, location } = useParams();
-  
+
   // Initialize form data from localStorage
   const [experienceFormData, setExperienceFormData] = useState([]);
 
@@ -35,6 +35,7 @@ const ExperienceForm = () => {
       address: '',
       mobile: '',
       email: '',
+      oldposition: '',
       experienceFile: null,
       experiance: details || '', // Include URL parameter
     }]
@@ -72,31 +73,6 @@ const ExperienceForm = () => {
     }
   };
 
-  // Add a new experience section
-  const addExperience = () => {
-    setFormData(prev => ({
-      ...prev,
-      experiences: [
-        ...prev.experiences,
-        {
-          companyName: '',
-          position: title || '',     // Include URL parameter
-          location: location || '',  // Include URL parameter
-          experiance: details || '', // Include URL parameter
-          durationFrom: '',
-          durationTo: '',
-          workModule: '',
-          firstName: '',
-          lastName: '',
-          address: '',
-          mobile: '',
-          email: '',
-          experienceFile: null,
-        }
-      ]
-    }));
-  };
-
   // Remove an experience section
   const removeExperience = (index) => {
     const updatedExperiences = formData.experiences.filter((_, i) => i !== index);
@@ -117,7 +93,7 @@ const ExperienceForm = () => {
     // No need to add URL parameters separately as they are already in each experience object
     const updatedData = [...experienceFormData, formData];
     localStorage.setItem('experienceFormData', JSON.stringify(updatedData));
-    
+
     // Update state with new data
     setExperienceFormData(updatedData);
     console.log('Form submitted:', formData);
@@ -318,6 +294,25 @@ const ExperienceForm = () => {
                 />
               </div>
 
+              <div className="relative mb-4">
+                <label
+                  htmlFor={`oldposition-${index}`}
+                  className={`absolute left-3 transition-all duration-200 ${fieldFocused[`oldposition${index}`] || i.oldposition ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2' : 'top-1/2 text-gray-500 -translate-y-1/2'}`}
+                >
+                  Position
+                </label>
+                <input
+                  id={`oldposition-${index}`}
+                  type="text"
+                  name="oldposition"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onFocus={() => handleExperienceFocus(index, 'oldposition')}
+                  onBlur={() => handleExperienceBlur(index, 'oldposition')}
+                  value={i.oldposition}
+                  onChange={(e) => handleExperienceChange(index, e)}
+                />
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 {/* Duration From */}
                 <div>
@@ -383,14 +378,6 @@ const ExperienceForm = () => {
               </div>
             </div>
           ))}
-
-          <button
-            type="button"
-            onClick={addExperience}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-          >
-            + Add Another Experience
-          </button>
         </div>
 
         {/* Submit Button */}
