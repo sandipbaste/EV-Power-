@@ -38,3 +38,13 @@ git merge changes/main
 
 git branch
 ```
+
+***back to last commit***
+
+```
+    git log --oneline 
+
+    git reset --hard <copy that hash and paste here>
+```
+
+*** 
