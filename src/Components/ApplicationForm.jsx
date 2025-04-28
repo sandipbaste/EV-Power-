@@ -145,8 +145,8 @@ const ApplicationForm = () => {
     formData.email &&
     formData.graduation &&
     formData.cgpa &&
-    formData.position &&
-    formData.resume
+    formData.position 
+    // formData.resume
   );
 
   // Additional validation for experience fields if the user is experienced
