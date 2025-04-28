@@ -1,16 +1,17 @@
-const express = require('express')
-require('dotenv').config()
+const express = require('express');
+const connectToMongo = require('./db');
+const dotenv = require('dotenv')
+dotenv.config()
+const applicationForm = require('./routes/applicationForm')
+const cors = require('cors')
 
+connectToMongo()
 const app = express()
-
-const port  = process.env.PORT
-
-
-app.use((req, res)=>{
-    res.send('db con')
-})
-
+app.use(express.json());
+app.use(applicationForm)
+app.use(cors());
+const port = process.env.PORT;
 
 app.listen(port, ()=>{
-    console.log(`listening port on http://localhost:${port}`)
+    console.log(`listening on http://localhost:${port}`)
 })
