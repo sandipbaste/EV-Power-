@@ -7,7 +7,6 @@ const ApplicationForm = () => {
   
   // State to track existing data from localStorage
   const [fresherDataArray, setFresherDataArray] = useState([]);
-  const [experienceDataArray, setExperienceDataArray] = useState([]);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -19,14 +18,6 @@ const ApplicationForm = () => {
     cgpa: '',
     position: '',
     resume: null,
-    isExperienced: false,
-    experiences: [{
-      companyName: '',
-      position: '',
-      durationFrom: '',
-      durationTo: '',
-      workModule: ''
-    }]
   });
 
   useEffect(() => {
@@ -35,11 +26,7 @@ const ApplicationForm = () => {
     if (fresherData) {
       setFresherDataArray(JSON.parse(fresherData));
     }
-    
-    const experienceData = localStorage.getItem('experienceDataArray');
-    if (experienceData) {
-      setExperienceDataArray(JSON.parse(experienceData));
-    }
+
   }, []);
 
   const [fieldFocused, setFieldFocused] = useState({
@@ -70,55 +57,6 @@ const ApplicationForm = () => {
     }));
   };
 
-  const handleExperienceChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedExperiences = [...formData.experiences];
-    updatedExperiences[index][name] = value;
-    setFormData(prev => ({
-      ...prev,
-      experiences: updatedExperiences
-    }));
-  };
-
-  const handleExperienceFocus = (index, field) => {
-    setFieldFocused(prev => ({
-      ...prev,
-      [`${field}${index}`]: true
-    }));
-  };
-
-  const handleExperienceBlur = (index, field) => {
-    if (!formData.experiences[index][field]) {
-      setFieldFocused(prev => ({
-        ...prev,
-        [`${field}${index}`]: false
-      }));
-    }
-  };
-
-  const addExperience = () => {
-    setFormData(prev => ({
-      ...prev,
-      experiences: [
-        ...prev.experiences,
-        {
-          companyName: '',
-          position: '',
-          durationFrom: '',
-          durationTo: '',
-          workModule: ''
-        }
-      ]
-    }));
-  };
-
-  const removeExperience = (index) => {
-    const updatedExperiences = formData.experiences.filter((_, i) => i !== index);
-    setFormData(prev => ({
-      ...prev,
-      experiences: updatedExperiences
-    }));
-  };
 
   const handleFocus = (field) => {
     setFieldFocused(prev => ({
@@ -414,23 +352,6 @@ const ApplicationForm = () => {
           </div>
         </div>
         
-        {/* Experienced Selection */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Employment Status</label>
-          <div className="">
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                name="isExperienced"
-                checked={formData.isExperienced}
-                onChange={handleCheckboxChange}
-                className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
-              />
-              <span className="ml-2 text-gray-700">Work Experience</span>
-            </label>
-          </div>
-        </div>
-        
         {/* Work Experience Details */}
         {formData.isExperienced && (
           <div className="mb-6">
@@ -527,32 +448,8 @@ const ApplicationForm = () => {
                     />
                   </div>
                 </div>
-                
-                {/* Work Module */}
-                <div className="mb-4">
-                  <label htmlFor={`workModule-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                    Work Module/Description
-                  </label>
-                  <textarea
-                    id={`workModule-${index}`}
-                    name="workModule"
-                    rows="4"
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={exp.workModule}
-                    onChange={(e) => handleExperienceChange(index, e)}
-                    placeholder="Describe your work responsibilities and achievements"
-                  />
-                </div>
               </div>
             ))}
-            
-            <button
-              type="button"
-              onClick={addExperience}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-            >
-              + Add Another Experience
-            </button>
           </div>
         )}
         
