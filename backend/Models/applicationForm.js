@@ -14,7 +14,7 @@ const ApplicationFormSchema = new mongoose.Schema({
         type: String,
         required: true
         },
-    mobileNumber: {
+    mobile: {
         type: Number,
          required: true 
         },
@@ -35,14 +35,14 @@ const ApplicationFormSchema = new mongoose.Schema({
             max: 10
           } 
         },
-    jobPosition: {
+    position: {
          type: String,
           required: true 
         },
     // resume: {
     //     type: String,
     //     required: true 
-    // }
+    // },
     createdAt: { type: Date, default: Date.now }
 });
 

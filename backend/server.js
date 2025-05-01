@@ -7,9 +7,19 @@ const cors = require('cors')
 
 connectToMongo()
 const app = express()
+
+// Allow requests from your frontend origin
+app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5174',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type']
+}));
+
 app.use(express.json());
-app.use(applicationForm)
-app.use(cors());
+  app.use('/api/applicationform', applicationForm)
+
+
 const port = process.env.PORT;
 
 app.listen(port, ()=>{

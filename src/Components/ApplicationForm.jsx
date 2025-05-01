@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 const ApplicationForm = () => {
   const navigate = useNavigate();
@@ -94,40 +96,54 @@ const ApplicationForm = () => {
 
   // Overall form validation
   const isFormValid = isBasicInfoValid && isExperienceValid;
+  const handleSubmit = async () => {
+    try {
+      const { firstName, lastName, address, mobile, email, graduation, cgpa, position } = formData;
   
-  const handleSubmit = () => {
-    // Create a copy of formData that we can store (remove the File object which can't be JSON stringified)
-    const formDataToStore = {
-      ...formData,
-      resume: formData.resume ? formData.resume.name : null
-    };
-
-    if (isBasicInfoValid) {
-      if (formData.isExperienced) {
-        // Check if experience fields are filled
-        const isExperienceComplete = formData.experiences.some(exp => 
-          exp.companyName && exp.position && exp.durationFrom
-        );
-        
-        if (isExperienceComplete) {
-          // Store in experienceDataArray
-          const newExperienceData = [...experienceDataArray, formDataToStore];
-          localStorage.setItem('experienceDataArray', JSON.stringify(newExperienceData));
-          setExperienceDataArray(newExperienceData);
-        }
-      } else {
-        // Store in fresherDataArray
-        const newFresherData = [...fresherDataArray, formDataToStore];
-        localStorage.setItem('fresherDataArray', JSON.stringify(newFresherData));
-        setFresherDataArray(newFresherData);
-      }
-      
-      // Navigate to the response page
+      const response = await axios.post('http://localhost:5000/api/applicationform', {
+        firstName,
+        lastName,
+        address,
+        mobile,
+        email,
+        graduation,
+        cgpa,
+        position
+      });
+  
+      console.log(response.data);
       navigate('/form-respones');
+
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Submission failed.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+      console.error("Error submitting form:", error.response?.data || error.message);
     }
   };
+  
 
   return (
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+    />
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-4xl">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Application Form</h1>
@@ -143,7 +159,7 @@ const ApplicationForm = () => {
                   ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
                   : 'top-1/2 text-gray-500 -translate-y-1/2'
               }`}
-            >
+              >
               First Name
             </label>
             <input
@@ -179,7 +195,7 @@ const ApplicationForm = () => {
               onBlur={() => handleBlur('lastName')}
               value={formData.lastName}
               onChange={handleChange}
-            />
+              />
           </div>
         </div>
         
@@ -191,8 +207,8 @@ const ApplicationForm = () => {
               fieldFocused.address || formData.address 
                 ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
                 : 'top-1/2 text-gray-500 -translate-y-1/2'
-            }`}
-          >
+              }`}
+              >
             Address
           </label>
           <input
@@ -204,7 +220,7 @@ const ApplicationForm = () => {
             onBlur={() => handleBlur('address')}
             value={formData.address}
             onChange={handleChange}
-          />
+            />
         </div>
         
         {/* Contact Information */}
@@ -215,10 +231,10 @@ const ApplicationForm = () => {
               htmlFor="mobile" 
               className={`absolute left-3 transition-all duration-200 ${
                 fieldFocused.mobile || formData.mobile 
-                  ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
+                ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
                   : 'top-1/2 text-gray-500 -translate-y-1/2'
               }`}
-            >
+              >
               Mobile Number
             </label>
             <input
@@ -254,7 +270,7 @@ const ApplicationForm = () => {
               onBlur={() => handleBlur('email')}
               value={formData.email}
               onChange={handleChange}
-            />
+              />
           </div>
         </div>
         
@@ -305,7 +321,7 @@ const ApplicationForm = () => {
               onBlur={() => handleBlur('cgpa')}
               value={formData.cgpa}
               onChange={handleChange}
-            />
+              />
           </div>
         </div>
         
@@ -352,106 +368,6 @@ const ApplicationForm = () => {
           </div>
         </div>
         
-        {/* Work Experience Details */}
-        {formData.isExperienced && (
-          <div className="mb-6">
-            <h3 className="text-lg font-medium text-gray-800 mb-4">Work Experience Details</h3>
-            
-            {formData.experiences.map((exp, index) => (
-              <div key={index} className="mb-6 p-4 border border-gray-200 rounded-lg">
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeExperience(index)}
-                    className="ml-auto block text-red-600 text-sm mb-2"
-                  >
-                    Remove Experience
-                  </button>
-                )}
-                
-                {/* Company Name */}
-                <div className="relative mb-4">
-                  <label 
-                    htmlFor={`companyName-${index}`} 
-                    className={`absolute left-3 transition-all duration-200 ${
-                      fieldFocused[`companyName${index}`] || exp.companyName 
-                        ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
-                        : 'top-1/2 text-gray-500 -translate-y-1/2'
-                    }`}
-                  >
-                    Company Name
-                  </label>
-                  <input
-                    id={`companyName-${index}`}
-                    type="text"
-                    name="companyName"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    onFocus={() => handleExperienceFocus(index, 'companyName')}
-                    onBlur={() => handleExperienceBlur(index, 'companyName')}
-                    value={exp.companyName}
-                    onChange={(e) => handleExperienceChange(index, e)}
-                  />
-                </div>
-                
-                {/* Position */}
-                <div className="relative mb-4">
-                  <label 
-                    htmlFor={`position-${index}`} 
-                    className={`absolute left-3 transition-all duration-200 ${
-                      fieldFocused[`position${index}`] || exp.position 
-                        ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
-                        : 'top-1/2 text-gray-500 -translate-y-1/2'
-                    }`}
-                  >
-                    Position
-                  </label>
-                  <input
-                    id={`position-${index}`}
-                    type="text"
-                    name="position"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    onFocus={() => handleExperienceFocus(index, 'position')}
-                    onBlur={() => handleExperienceBlur(index, 'position')}
-                    value={exp.position}
-                    onChange={(e) => handleExperienceChange(index, e)}
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  {/* Duration From */}
-                  <div>
-                    <label htmlFor={`durationFrom-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                      Duration From
-                    </label>
-                    <input
-                      id={`durationFrom-${index}`}
-                      type="date"
-                      name="durationFrom"
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      value={exp.durationFrom}
-                      onChange={(e) => handleExperienceChange(index, e)}
-                    />
-                  </div>
-                  
-                  {/* Duration To */}
-                  <div>
-                    <label htmlFor={`durationTo-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                      Duration To
-                    </label>
-                    <input
-                      id={`durationTo-${index}`}
-                      type="date"
-                      name="durationTo"
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      value={exp.durationTo}
-                      onChange={(e) => handleExperienceChange(index, e)}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
         
         {/* Submit Button */}
         <button
@@ -460,14 +376,15 @@ const ApplicationForm = () => {
           onClick={handleSubmit}
           className={`w-full py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors mb-4 ${
             isFormValid 
-              ? 'bg-blue-600 text-white hover:bg-blue-700' 
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            ? 'bg-blue-600 text-white hover:bg-blue-700' 
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
-        >
+          >
           Submit Application
         </button>
       </div>
     </div>
+          </>
   );
 };
 

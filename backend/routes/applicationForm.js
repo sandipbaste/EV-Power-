@@ -16,22 +16,17 @@ const applicationForm = express.Router();
 // });
 // const upload = multer({ storage: storage });
 
-applicationForm.post('/api/applicationform', 
+applicationForm.post('/', 
     // upload.single('resume'),
     [
     body('firstName', "Enter a valid Name").isLength({ min: 3 }),
     body('lastName', "Enter a valid Last Name").isLength({ min: 3 }),
     body('address', 'Enter a valid Address').isLength({ min: 3 }),
-    body('mobileNumber', 'Enter a valid Mobile Number').isLength({ min: 10, max: 12 }),
+    body('mobile', 'Valid mobile number required').isMobilePhone(),
     body('email', 'Enter a valid Email').isEmail(),
     body('graduation', 'Enter a valid Graduation Name').isLength({ min: 2 }),
     body('cgpa', 'Enter valid CGPA').isLength({ min: 1, max: 4 }),
-    body('jobPosition', 'Select any one').notEmpty(),
-    body('companyName', 'Enter valid Previous Company Name').isLength({ min: 3 }),
-    body('position', 'Enter valid Job Position').isLength({ min: 3 }),
-    body('durationFrom', 'Enter a valid join Date').notEmpty(),
-    body('durationTo', 'Enter a valid end Date').notEmpty(),
-    body('workModule', "Enter valid work Module / Description").isLength({ min: 3 })
+    body('position', 'Select any one').notEmpty()
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -39,11 +34,7 @@ applicationForm.post('/api/applicationform',
     }
 
     try {
-        const {
-            firstName, lastName, address, mobileNumber, email, graduation,
-            cgpa, jobPosition, companyName, position,
-            durationFrom, durationTo, workModule
-        } = req.body;
+        const { firstName, lastName, address, mobile, email, graduation,cgpa, position } = req.body;
 
         // const resume = req.file?.path;
 
@@ -56,17 +47,12 @@ applicationForm.post('/api/applicationform',
             firstName,
             lastName,
             address,
-            mobileNumber,
+            mobile,
             email,
             graduation,
             cgpa,
-            jobPosition,
-            // resume,
-            companyName,
             position,
-            durationFrom,
-            durationTo,
-            workModule
+            // resume,
         });
 
         const savedApplication = await user.save();
