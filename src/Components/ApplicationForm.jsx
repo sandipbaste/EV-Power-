@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -6,9 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 
 const ApplicationForm = () => {
   const navigate = useNavigate();
-  
-  // State to track existing data from localStorage
-  const [fresherDataArray, setFresherDataArray] = useState([]);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -22,14 +19,6 @@ const ApplicationForm = () => {
     resume: null,
   });
 
-  useEffect(() => {
-    // Get existing data from localStorage
-    const fresherData = localStorage.getItem('fresherDataArray');
-    if (fresherData) {
-      setFresherDataArray(JSON.parse(fresherData));
-    }
-
-  }, []);
 
   const [fieldFocused, setFieldFocused] = useState({
     firstName: false,
@@ -39,8 +28,8 @@ const ApplicationForm = () => {
     email: false,
     graduation: false,
     cgpa: false,
-    companyName: false,
-    position: false
+    position: false,
+    resume: false
   });
 
   const handleChange = (e) => {
@@ -51,13 +40,6 @@ const ApplicationForm = () => {
     }));
   };
 
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: checked
-    }));
-  };
 
 
   const handleFocus = (field) => {
@@ -85,49 +67,62 @@ const ApplicationForm = () => {
     formData.email &&
     formData.graduation &&
     formData.cgpa &&
-    formData.position 
-    // formData.resume
+    formData.position, 
+    formData.resume
   );
 
-  // Additional validation for experience fields if the user is experienced
-  const isExperienceValid = !formData.isExperienced || formData.experiences.every(exp => 
-    exp.companyName && exp.position && exp.durationFrom && exp.workModule
-  );
 
   // Overall form validation
-  const isFormValid = isBasicInfoValid && isExperienceValid;
-  const handleSubmit = async () => {
-    try {
-      const { firstName, lastName, address, mobile, email, graduation, cgpa, position } = formData;
-  
-      const response = await axios.post('http://localhost:5000/api/applicationform', {
-        firstName,
-        lastName,
-        address,
-        mobile,
-        email,
-        graduation,
-        cgpa,
-        position
-      });
-  
-      console.log(response.data);
-      navigate('/form-respones');
+  const isFormValid = isBasicInfoValid;
+ const handleSubmit = async () => {
+  try {
+    const {
+      firstName,
+      lastName,
+      address,
+      mobile,
+      email,
+      graduation,
+      cgpa,
+      position,
+      resume, 
+    } = formData;
 
-    } catch (error) {
-      toast.error(error.response?.data?.error || "Submission failed.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        });
-      console.error("Error submitting form:", error.response?.data || error.message);
-    }
-  };
+    const form = new FormData();
+    form.append("firstName", firstName);
+    form.append("lastName", lastName);
+    form.append("address", address);
+    form.append("mobile", mobile);
+    form.append("email", email);
+    form.append("graduation", graduation);
+    form.append("cgpa", cgpa);
+    form.append("position", position);
+    form.append("resume", resume); // Append the file
+
+    const response = await axios.post("http://localhost:5000/api/applicationform", form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log(response.data);
+    navigate("/form-respones");
+
+  } catch (error) {
+    toast.error(error.response?.data?.error || "Submission failed.", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+    console.error("Error submitting form:", error.response?.data || error.message);
+  }
+};
+
   
 
   return (
