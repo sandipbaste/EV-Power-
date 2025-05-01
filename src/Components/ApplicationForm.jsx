@@ -6,9 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 
 const ApplicationForm = () => {
   const navigate = useNavigate();
-  
-  // State to track existing data from localStorage
-  const [fresherDataArray, setFresherDataArray] = useState([]);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -21,15 +18,6 @@ const ApplicationForm = () => {
     position: '',
     resume: null,
   });
-
-  useEffect(() => {
-    // Get existing data from localStorage
-    const fresherData = localStorage.getItem('fresherDataArray');
-    if (fresherData) {
-      setFresherDataArray(JSON.parse(fresherData));
-    }
-
-  }, []);
 
   const [fieldFocused, setFieldFocused] = useState({
     firstName: false,
@@ -48,14 +36,6 @@ const ApplicationForm = () => {
     setFormData(prev => ({
       ...prev,
       [name]: type === 'file' ? files[0] : value
-    }));
-  };
-
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: checked
     }));
   };
 
