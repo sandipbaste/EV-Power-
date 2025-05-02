@@ -31,7 +31,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-applicationForm.post('/',
+applicationForm.post('/applicationform',
     upload.single('resume'),
     [
         body('firstName', "Enter a valid Name").isLength({ min: 3 }),

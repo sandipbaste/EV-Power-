@@ -4,20 +4,17 @@ const dotenv = require('dotenv')
 dotenv.config()
 const applicationForm = require('./routes/applicationForm')
 const cors = require('cors')
+const jobPosition = require('./routes/jobPosition')
 
 connectToMongo()
 const app = express()
 
 // Allow requests from your frontend origin
 app.use(cors())
-app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type']
-}));
 
 app.use(express.json());
-  app.use('/api/applicationform', applicationForm)
+app.use('/api', applicationForm)
+app.use('/api', jobPosition)
 
 
 const port = process.env.PORT;

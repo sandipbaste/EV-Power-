@@ -1,16 +1,23 @@
-const mongoose = require('mongoose')
-const { Schema } = mongoose
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
 const jobPositionSchema = new Schema({
-    experience: {
-        type: String,
+  title: {
+    type: String,
+    required: true 
     },
-    location: {
-        type: String,
+  details: {
+    type: String,
+    required: true 
     },
-    position: {
-        type: String,
-      }
-})
+  location: {
+    type: String,
+    required: true 
+    },
+}, {
+  timestamps: true // optional: helps track updates
+});
 
-module.exports = mongoose.model('jobPosition', jobPositionSchema)
+jobPositionSchema.index({ title: 1, location: 1 }, { unique: true }); // to avoid duplicates
+
+module.exports = mongoose.model('JobPosition', jobPositionSchema);

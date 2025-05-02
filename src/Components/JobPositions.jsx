@@ -1,68 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Briefcase, MapPin, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const JobPositions = () => {
-  const navigate = useNavigate()
+  useEffect(() => {
+    const syncJobs = async () => {
+      const allJobs = [...initialJobs, ...additionalJobs];
+      try {
+        const response = await axios.post('http://localhost:5000/api/job-position', { jobs: allJobs });
+        if (response.status === 200) {
+          setJobs(response.data.jobs); // Set jobs returned by backend
+        }
+      } catch (error) {
+        console.error("Error syncing jobs:", error);
+      }
+    };
+    syncJobs();
+  }, []);
+  const navigate = useNavigate();
+
   const initialJobs = [
-    {
-      id: 1,
-      title: "Software Engineer",
-      details: "Experience: 2+ Years",
-      location: "Pune"
-    },
-    {
-      id: 2,
-      title: "Battery Technician",
-      details: "Experience: 1+ Years",
-      location: "Chennai"
-    },
-    {
-      id: 3,
-      title: "HR Manager",
-      details: "Experience: 3+ Years",
-      location: "Mumbai"
-    },
-    
+    { title: "Software Engineer", details: "Experience: 2+ Years", location: "Pune" },
+    { title: "Battery Technician", details: "Experience: 1+ Years", location: "Chennai" },
+    { title: "HR Manager", details: "Experience: 3+ Years", location: "Mumbai" },
   ];
 
   const additionalJobs = [
-    {
-      id: 4,
-      title: "Marketing Specialist",
-      details: "Experience: 2+ Years" ,
-      location: "Banglore",
-    },
-    {
-      id: 5,
-      title: "Electrical Engineer",
-      details: "Experience: 3+ Years",
-       location: "Pune"
-    },
-    {
-      id: 6,
-      title: "Customer Support",
-      details: "Experience: 1+ Years",
-      location: "Nashik"
-    },
-    {
-      id: 7,
-      title: "Sales Executive",
-      details: "Experience: 2+ Years",
-      location: "Nashik"
-    },
-    {
-      id: 8,
-      title: "Data Analyst",
-      details: "Experience: 2+ Years",
-      location: "Pune"
-    },
-    {
-      id: 9,
-      title: "Data Analyst",
-      details: "Experience: 2+ Years",
-      location: "Delhi"
-    },
+    { title: "Marketing Specialist", details: "Experience: 2+ Years", location: "Banglore" },
+    { title: "Electrical Engineer", details: "Experience: 3+ Years", location: "Pune" },
+    { title: "Customer Support", details: "Experience: 1+ Years", location: "Nashik" },
+    { title: "Sales Executive", details: "Experience: 2+ Years", location: "Nashik" },
+    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Pune" },
+    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Delhi" },
   ];
 
   const [showAllJobs, setShowAllJobs] = useState(false);
@@ -70,16 +40,19 @@ const JobPositions = () => {
 
   const toggleJobs = () => {
     if (showAllJobs) {
-      setJobs(initialJobs);
+      setJobs(jobs.slice(0, initialJobs.length)); // Show only initial
     } else {
-      setJobs([...initialJobs, ...additionalJobs]);
+      setJobs(jobs); // Show all (already fetched from backend)
     }
     setShowAllJobs(!showAllJobs);
   };
 
-  const handleApplyNow = (title, details, location) =>{
-    navigate(`/experience-form/${title}/${details}/${location}`)
-  }
+  const handleApplyNow = (title, details, location) => {
+    navigate(`/experience-form/${title}/${details}/${location}`);
+  };
+
+  // 🔁 Sync jobs to backend on mount
+  
 
   return (
     <section className="bg-white py-16 text-gray-900">
@@ -89,9 +62,9 @@ const JobPositions = () => {
         </h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {jobs.map((job) => (
+          {(showAllJobs ? jobs : jobs.slice(0, initialJobs.length)).map((job, index) => (
             <div
-              key={job.id}
+              key={`${job.index}-${job.location}-${index}`}
               className="bg-white border-l-8 border-[#1e293b] rounded-xl shadow-md p-6 transition duration-300 hover:scale-[1.02] hover:shadow-2xl"
             >
               <div className="flex items-center gap-3 mb-4">
@@ -108,7 +81,10 @@ const JobPositions = () => {
                   <span>{job.location}</span>
                 </div>
               </div>
-              <button onClick={()=>handleApplyNow(job.title, job.details, job.location)} className="w-full bg-[#1e293b] hover:bg-[#334155] text-[#FFD700] font-semibold py-2 rounded-lg shadow-md transition duration-300">
+              <button
+                onClick={() => handleApplyNow(job.title, job.details, job.location)}
+                className="w-full bg-[#1e293b] hover:bg-[#334155] text-[#FFD700] font-semibold py-2 rounded-lg shadow-md transition duration-300"
+              >
                 Apply Now
               </button>
             </div>
@@ -129,3 +105,4 @@ const JobPositions = () => {
 };
 
 export default JobPositions;
+  
