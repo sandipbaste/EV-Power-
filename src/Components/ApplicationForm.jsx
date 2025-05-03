@@ -137,7 +137,7 @@ const ApplicationForm = () => {
         pauseOnHover
         theme="light"
     />
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center  my-20">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-4xl">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Application Form</h1>
         

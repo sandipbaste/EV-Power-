@@ -2,9 +2,8 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const ApplicationForm = require('../Models/applicationForm');
 const multer = require('multer');
-const path = require('path');
 const nodemailer = require('nodemailer');
-const fs = require('fs');
+const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -12,113 +11,133 @@ const applicationForm = express.Router();
 
 // Multer setup
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads');
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + file.originalname;
-        cb(null, uniqueSuffix);
-    }
+  destination: function (req, file, cb) {
+    cb(null, 'uploads');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + file.originalname;
+    cb(null, uniqueSuffix);
+  }
 });
 const upload = multer({ storage });
 
-// Nodemailer setup
+// Nodemailer transporter
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAILPASSWORD
-    }
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAILPASSWORD
+  }
 });
 
-applicationForm.post('/applicationform',
-    upload.single('resume'),
-    [
-        body('firstName', "Enter a valid Name").isLength({ min: 3 }),
-        body('lastName', "Enter a valid Last Name").isLength({ min: 3 }),
-        body('address', 'Enter a valid Address').isLength({ min: 3 }),
-        body('mobile', 'Valid mobile number required').isMobilePhone(),
-        body('email', 'Enter a valid Email').isEmail(),
-        body('graduation', 'Enter a valid Graduation Name').isLength({ min: 2 }),
-        body('cgpa', 'Enter valid CGPA').isLength({ min: 1, max: 4 }),
-        body('position', 'Select any one').notEmpty()
-    ],
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+// Helper functions
+const sendConfirmationEmail = async (firstName, email) => {
+  const userMailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: 'Your Application Submitted Successfully',
+    text: `Hi ${firstName},\n\nThank you for applying. We have received your application.\n\nRegards,\nTeam`
+  };
+  await transporter.sendMail(userMailOptions);
+};
 
-        if (!req.file) {
-            return res.status(400).json({
-                errors: [{ msg: 'Upload a resume', path: 'resume', location: 'body' }]
-            });
-        }
+const sendAptitudeEmail = async (firstName, email) => {
+  const aptitudeMailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: 'Aptitude Test Invitation',
+    html: `<p>Hi ${firstName},</p>
+           <p>You're invited to take the aptitude test.</p>
+           <a href="${process.env.CLIENT_BASE_URL}" target="_blank" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px;">Start Test</a>
+           <p>Best of luck!</p>`
+  };
+  await transporter.sendMail(aptitudeMailOptions);
+};
 
-        try {
-            const { firstName, lastName, address, mobile, email, graduation, cgpa, position } = req.body;
-            const resumePath = req.file.path;
+const sendAdminEmail = async (firstName, lastName, email, mobile, resumePath) => {
+  const adminMailOptions = {
+    from: process.env.EMAIL,
+    to: process.env.ADMINEMAIL,
+    subject: 'New Job Application Submitted',
+    text: `New applicant:\n\nName: ${firstName} ${lastName}\nEmail: ${email}\nMobile: ${mobile}`,
+    attachments: [
+      {
+        filename: path.basename(resumePath),
+        path: resumePath
+      }
+    ]
+  };
+  await transporter.sendMail(adminMailOptions);
+};
 
-            // Check for duplicate email
-            const existingUser = await ApplicationForm.findOne({ email });
-            if (existingUser) {
-                return res.status(400).json({ error: 'User with this email already exists' });
-            }
-
-            const newApplication = new ApplicationForm({
-                firstName,
-                lastName,
-                address,
-                mobile,
-                email,
-                graduation,
-                cgpa,
-                position,
-                resume: resumePath
-            });
-
-            const savedApplication = await newApplication.save();
-
-            // Email to user
-            const userMailOptions = {
-                from: process.env.EMAIL,
-                to: email,
-                subject: 'Your Application Submitted Successfully',
-                text: `Hi ${firstName},\n\nThank you for applying. We have received your application and will contact you soon.\n\nRegards,\nTeam`
-            };
-
-            // Email to admin
-            const adminMailOptions = {
-                from: process.env.EMAIL,
-                to: process.env.ADMINEMAIL,
-                subject: 'New Job Application Submitted',
-                text: `New applicant:\n\nName: ${firstName} ${lastName}\nEmail: ${email}\nMobile: ${mobile}`,
-                attachments: [
-                    {
-                        filename: path.basename(resumePath),
-                        path: resumePath
-                    }
-                ]
-            };
-
-            // Send emails in parallel
-            Promise.all([
-                transporter.sendMail(userMailOptions),
-                transporter.sendMail(adminMailOptions)
-            ]).catch((err) => {
-                console.error("Email sending error:", err.message);
-            });
-
-            res.status(200).json({
-                message: 'Application submitted successfully. Emails are being sent.',
-                savedApplication
-            });
-
-        } catch (error) {
-            console.error(error.message);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
+// POST route
+applicationForm.post(
+  '/applicationform',
+  upload.single('resume'),
+  [
+    body('firstName').isLength({ min: 3 }),
+    body('lastName').isLength({ min: 3 }),
+    body('address').isLength({ min: 3 }),
+    body('mobile').isMobilePhone(),
+    body('email').isEmail(),
+    body('graduation').isLength({ min: 2 }),
+    body('cgpa').isLength({ min: 1, max: 4 }),
+    body('position').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Resume file required' });
+    }
+
+    try {
+      const { firstName, lastName, address, mobile, email, graduation, cgpa, position } = req.body;
+      const resumePath = req.file.path;
+
+      const existingUser = await ApplicationForm.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: 'User with this email already exists' });
+      }
+
+      const newApplication = new ApplicationForm({
+        firstName,
+        lastName,
+        address,
+        mobile,
+        email,
+        graduation,
+        cgpa,
+        position,
+        resume: resumePath
+      });
+
+      const savedApplication = await newApplication.save();
+
+      // Send confirmation email
+      sendConfirmationEmail(firstName, email).catch(console.error);
+
+      // Send admin notification email
+      sendAdminEmail(firstName, lastName, email, mobile, resumePath).catch(console.error);
+
+      // Send aptitude test email after 2 minutes
+      setTimeout(() => {
+        sendAptitudeEmail(firstName, email).catch(console.error);
+      }, 1* 60 * 1000); // 2 minutes
+
+      res.status(200).json({
+        message: 'Application submitted successfully. Emails are being sent.',
+        savedApplication
+      });
+
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
 );
 
 module.exports = applicationForm;

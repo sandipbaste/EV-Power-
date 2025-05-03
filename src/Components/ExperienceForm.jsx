@@ -101,12 +101,12 @@ const ExperienceForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center my-20">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-4xl">
 
         {/* Work Experience Details */}
         <div className="mb-6">
-          <h3 className="text-lg font-medium text-gray-800 mb-4 text-center">Application Form</h3>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Application Form</h1>
 
           {formData.experiences.map((i, index) => (
             <div key={index} className="mb-6 p-4 border border-gray-200 rounded-lg">
