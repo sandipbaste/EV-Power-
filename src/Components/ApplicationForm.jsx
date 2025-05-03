@@ -65,7 +65,7 @@ const ApplicationForm = () => {
     formData.email &&
     formData.graduation &&
     formData.cgpa &&
-    formData.position, 
+    formData.position &&
     formData.resume
   );
 

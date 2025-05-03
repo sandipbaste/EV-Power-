@@ -15,9 +15,10 @@ const jobPositionSchema = new Schema({
     required: true 
     },
 }, {
-  timestamps: true // optional: helps track updates
+  timestamps: true 
 });
 
-jobPositionSchema.index({ title: 1, location: 1 }, { unique: true }); // to avoid duplicates
+jobPositionSchema.index({
+   title: 1, location: 1 }, { unique: true }); 
 
 module.exports = mongoose.model('JobPosition', jobPositionSchema);
