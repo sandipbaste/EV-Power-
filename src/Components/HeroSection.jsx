@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   return (
+    <>
     <div className="min-h-screen bg-gradient-to-r from-blue-200 to-white flex items-center justify-center px-6 py-12 ">
       <div className="container mx-auto flex flex-col-reverse md:flex-row-reverse items-center gap-12 md:gap-0 md:mb-24">
         {/* Image Section */}
@@ -30,6 +31,7 @@ const HeroSection = () => {
 
       </div>
     </div>
+   </>
   );
 };
 

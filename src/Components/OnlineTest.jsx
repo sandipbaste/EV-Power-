@@ -81,11 +81,6 @@ const OnlineTest = () => {
     }));
   };
 
-  const handleSkip = () => {
-    setSkippedQuestions((prev) => [...prev, questions[currentQuestionIndex].id]);
-    goToNextQuestion();
-  };
-
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);

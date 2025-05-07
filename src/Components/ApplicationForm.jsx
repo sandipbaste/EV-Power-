@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 const ApplicationForm = () => {
   const navigate = useNavigate();
-  
-  // State to track existing data from localStorage
-  const [fresherDataArray, setFresherDataArray] = useState([]);
-  const [experienceDataArray, setExperienceDataArray] = useState([]);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -19,28 +17,7 @@ const ApplicationForm = () => {
     cgpa: '',
     position: '',
     resume: null,
-    isExperienced: false,
-    experiences: [{
-      companyName: '',
-      position: '',
-      durationFrom: '',
-      durationTo: '',
-      workModule: ''
-    }]
   });
-
-  useEffect(() => {
-    // Get existing data from localStorage
-    const fresherData = localStorage.getItem('fresherDataArray');
-    if (fresherData) {
-      setFresherDataArray(JSON.parse(fresherData));
-    }
-    
-    const experienceData = localStorage.getItem('experienceDataArray');
-    if (experienceData) {
-      setExperienceDataArray(JSON.parse(experienceData));
-    }
-  }, []);
 
   const [fieldFocused, setFieldFocused] = useState({
     firstName: false,
@@ -50,8 +27,8 @@ const ApplicationForm = () => {
     email: false,
     graduation: false,
     cgpa: false,
-    companyName: false,
-    position: false
+    position: false,
+    resume: false
   });
 
   const handleChange = (e) => {
@@ -62,63 +39,6 @@ const ApplicationForm = () => {
     }));
   };
 
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: checked
-    }));
-  };
-
-  const handleExperienceChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedExperiences = [...formData.experiences];
-    updatedExperiences[index][name] = value;
-    setFormData(prev => ({
-      ...prev,
-      experiences: updatedExperiences
-    }));
-  };
-
-  const handleExperienceFocus = (index, field) => {
-    setFieldFocused(prev => ({
-      ...prev,
-      [`${field}${index}`]: true
-    }));
-  };
-
-  const handleExperienceBlur = (index, field) => {
-    if (!formData.experiences[index][field]) {
-      setFieldFocused(prev => ({
-        ...prev,
-        [`${field}${index}`]: false
-      }));
-    }
-  };
-
-  const addExperience = () => {
-    setFormData(prev => ({
-      ...prev,
-      experiences: [
-        ...prev.experiences,
-        {
-          companyName: '',
-          position: '',
-          durationFrom: '',
-          durationTo: '',
-          workModule: ''
-        }
-      ]
-    }));
-  };
-
-  const removeExperience = (index) => {
-    const updatedExperiences = formData.experiences.filter((_, i) => i !== index);
-    setFormData(prev => ({
-      ...prev,
-      experiences: updatedExperiences
-    }));
-  };
 
   const handleFocus = (field) => {
     setFieldFocused(prev => ({
@@ -149,48 +69,75 @@ const ApplicationForm = () => {
     formData.resume
   );
 
-  // Additional validation for experience fields if the user is experienced
-  const isExperienceValid = !formData.isExperienced || formData.experiences.every(exp => 
-    exp.companyName && exp.position && exp.durationFrom && exp.workModule
-  );
 
   // Overall form validation
-  const isFormValid = isBasicInfoValid && isExperienceValid;
-  
-  const handleSubmit = () => {
-    // Create a copy of formData that we can store (remove the File object which can't be JSON stringified)
-    const formDataToStore = {
-      ...formData,
-      resume: formData.resume ? formData.resume.name : null
-    };
+  const isFormValid = isBasicInfoValid;
+ const handleSubmit = async () => {
+  try {
+    const {
+      firstName,
+      lastName,
+      address,
+      mobile,
+      email,
+      graduation,
+      cgpa,
+      position,
+      resume, 
+    } = formData;
 
-    if (isBasicInfoValid) {
-      if (formData.isExperienced) {
-        // Check if experience fields are filled
-        const isExperienceComplete = formData.experiences.some(exp => 
-          exp.companyName && exp.position && exp.durationFrom
-        );
-        
-        if (isExperienceComplete) {
-          // Store in experienceDataArray
-          const newExperienceData = [...experienceDataArray, formDataToStore];
-          localStorage.setItem('experienceDataArray', JSON.stringify(newExperienceData));
-          setExperienceDataArray(newExperienceData);
-        }
-      } else {
-        // Store in fresherDataArray
-        const newFresherData = [...fresherDataArray, formDataToStore];
-        localStorage.setItem('fresherDataArray', JSON.stringify(newFresherData));
-        setFresherDataArray(newFresherData);
-      }
-      
-      // Navigate to the response page
-      navigate('/form-respones');
-    }
-  };
+    const form = new FormData();
+    form.append("firstName", firstName);
+    form.append("lastName", lastName);
+    form.append("address", address);
+    form.append("mobile", mobile);
+    form.append("email", email);
+    form.append("graduation", graduation);
+    form.append("cgpa", cgpa);
+    form.append("position", position);
+    form.append("resume", resume); // Append the file
+
+    const response = await axios.post("http://localhost:5000/api/applicationform", form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log(response.data);
+    navigate("/form-respones");
+
+  } catch (error) {
+    toast.error(error.response?.data?.error || "Submission failed.", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+    console.error("Error submitting form:", error.response?.data || error.message);
+  }
+};
+
+  
 
   return (
-    <div className="md:mt-14 bg-gray-100 flex items-center justify-center p-4">
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+    />
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center  my-20">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-4xl">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Application Form</h1>
         
@@ -205,7 +152,7 @@ const ApplicationForm = () => {
                   ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
                   : 'top-1/2 text-gray-500 -translate-y-1/2'
               }`}
-            >
+              >
               First Name
             </label>
             <input
@@ -241,7 +188,7 @@ const ApplicationForm = () => {
               onBlur={() => handleBlur('lastName')}
               value={formData.lastName}
               onChange={handleChange}
-            />
+              />
           </div>
         </div>
         
@@ -253,8 +200,8 @@ const ApplicationForm = () => {
               fieldFocused.address || formData.address 
                 ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
                 : 'top-1/2 text-gray-500 -translate-y-1/2'
-            }`}
-          >
+              }`}
+              >
             Address
           </label>
           <input
@@ -266,7 +213,7 @@ const ApplicationForm = () => {
             onBlur={() => handleBlur('address')}
             value={formData.address}
             onChange={handleChange}
-          />
+            />
         </div>
         
         {/* Contact Information */}
@@ -277,10 +224,10 @@ const ApplicationForm = () => {
               htmlFor="mobile" 
               className={`absolute left-3 transition-all duration-200 ${
                 fieldFocused.mobile || formData.mobile 
-                  ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
+                ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
                   : 'top-1/2 text-gray-500 -translate-y-1/2'
               }`}
-            >
+              >
               Mobile Number
             </label>
             <input
@@ -316,7 +263,7 @@ const ApplicationForm = () => {
               onBlur={() => handleBlur('email')}
               value={formData.email}
               onChange={handleChange}
-            />
+              />
           </div>
         </div>
         
@@ -367,7 +314,7 @@ const ApplicationForm = () => {
               onBlur={() => handleBlur('cgpa')}
               value={formData.cgpa}
               onChange={handleChange}
-            />
+              />
           </div>
         </div>
         
@@ -414,147 +361,6 @@ const ApplicationForm = () => {
           </div>
         </div>
         
-        {/* Experienced Selection */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Employment Status</label>
-          <div className="">
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                name="isExperienced"
-                checked={formData.isExperienced}
-                onChange={handleCheckboxChange}
-                className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
-              />
-              <span className="ml-2 text-gray-700">Work Experience</span>
-            </label>
-          </div>
-        </div>
-        
-        {/* Work Experience Details */}
-        {formData.isExperienced && (
-          <div className="mb-6">
-            <h3 className="text-lg font-medium text-gray-800 mb-4">Work Experience Details</h3>
-            
-            {formData.experiences.map((exp, index) => (
-              <div key={index} className="mb-6 p-4 border border-gray-200 rounded-lg">
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeExperience(index)}
-                    className="ml-auto block text-red-600 text-sm mb-2"
-                  >
-                    Remove Experience
-                  </button>
-                )}
-                
-                {/* Company Name */}
-                <div className="relative mb-4">
-                  <label 
-                    htmlFor={`companyName-${index}`} 
-                    className={`absolute left-3 transition-all duration-200 ${
-                      fieldFocused[`companyName${index}`] || exp.companyName 
-                        ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
-                        : 'top-1/2 text-gray-500 -translate-y-1/2'
-                    }`}
-                  >
-                    Company Name
-                  </label>
-                  <input
-                    id={`companyName-${index}`}
-                    type="text"
-                    name="companyName"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    onFocus={() => handleExperienceFocus(index, 'companyName')}
-                    onBlur={() => handleExperienceBlur(index, 'companyName')}
-                    value={exp.companyName}
-                    onChange={(e) => handleExperienceChange(index, e)}
-                  />
-                </div>
-                
-                {/* Position */}
-                <div className="relative mb-4">
-                  <label 
-                    htmlFor={`position-${index}`} 
-                    className={`absolute left-3 transition-all duration-200 ${
-                      fieldFocused[`position${index}`] || exp.position 
-                        ? 'top-0 text-xs bg-white px-1 text-blue-500 -translate-y-1/2'
-                        : 'top-1/2 text-gray-500 -translate-y-1/2'
-                    }`}
-                  >
-                    Position
-                  </label>
-                  <input
-                    id={`position-${index}`}
-                    type="text"
-                    name="position"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    onFocus={() => handleExperienceFocus(index, 'position')}
-                    onBlur={() => handleExperienceBlur(index, 'position')}
-                    value={exp.position}
-                    onChange={(e) => handleExperienceChange(index, e)}
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  {/* Duration From */}
-                  <div>
-                    <label htmlFor={`durationFrom-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                      Duration From
-                    </label>
-                    <input
-                      id={`durationFrom-${index}`}
-                      type="date"
-                      name="durationFrom"
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      value={exp.durationFrom}
-                      onChange={(e) => handleExperienceChange(index, e)}
-                    />
-                  </div>
-                  
-                  {/* Duration To */}
-                  <div>
-                    <label htmlFor={`durationTo-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                      Duration To
-                    </label>
-                    <input
-                      id={`durationTo-${index}`}
-                      type="date"
-                      name="durationTo"
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      value={exp.durationTo}
-                      onChange={(e) => handleExperienceChange(index, e)}
-                    />
-                  </div>
-                </div>
-                
-                {/* Work Module */}
-                <div className="mb-4">
-                  <label htmlFor={`workModule-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                    Work Module/Description
-                  </label>
-                  <textarea
-                    id={`workModule-${index}`}
-                    name="workModule"
-                    rows="4"
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={exp.workModule}
-                    onChange={(e) => handleExperienceChange(index, e)}
-                    placeholder="Describe your work responsibilities and achievements"
-                  />
-                </div>
-              </div>
-            ))}
-            
-            <button
-              type="button"
-              onClick={addExperience}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-            >
-              + Add Another Experience
-            </button>
-          </div>
-        )}
         
         {/* Submit Button */}
         <button
@@ -563,14 +369,15 @@ const ApplicationForm = () => {
           onClick={handleSubmit}
           className={`w-full py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors mb-4 ${
             isFormValid 
-              ? 'bg-blue-600 text-white hover:bg-blue-700' 
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            ? 'bg-blue-600 text-white hover:bg-blue-700' 
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
-        >
+          >
           Submit Application
         </button>
       </div>
     </div>
+          </>
   );
 };
 
