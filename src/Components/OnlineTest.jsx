@@ -43,29 +43,37 @@ const OnlineTest = () => {
     { id: 39, text: "What is the main reason to adopt electric vehicles in public transport systems?", options: ["Lower operational costs", "Faster passenger service", "Higher energy consumption", "Less frequent charging stations"], answer: "Lower operational costs" },
     { id: 40, text: "Which renewable energy source is commonly used to charge electric vehicles?", options: ["Solar energy", "Wind energy", "Hydropower", "Geothermal"], answer: "Solar energy" }
   ]);
-  
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [skippedQuestions, setSkippedQuestions] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes in seconds
+
+  const [timeLeft, setTimeLeft] = useState(60 * 1); // 60 minutes in seconds
   const [isSubmitted, setIsSubmitted] = useState(false);
   const timerRef = useRef(null);
+
+  // Check if all questions are answered
+  const allQuestionsAnswered = Object.keys(selectedAnswers).length === questions.length;
+
+  // const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false)
+  // Check if timer has ended
+  const timerEnded = timeLeft <= 0;
 
   // Handle timer countdown
   useEffect(() => {
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
+          clearInterval(timerRef.current);
           handleSubmit();
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-
+  
     return () => clearInterval(timerRef.current);
   }, []);
+  
 
   // Format time as MM:SS
   const formatTime = (seconds) => {
@@ -113,12 +121,6 @@ const OnlineTest = () => {
           <p className="text-lg text-gray-600 mb-6">
             You answered {Object.keys(selectedAnswers).length} out of {questions.length} questions.
           </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Take Test Again
-          </button>
         </div>
       </div>
     );
@@ -192,12 +194,6 @@ const OnlineTest = () => {
               Previous
             </button>
             <div className="flex gap-3">
-              {/* <button
-                onClick={handleSkip}
-                className="px-6 py-2 bg-blue-600 text-yellow-800 rounded-lg hover:bg-yellow-200"
-              >
-                Next1
-              </button> */}
               {currentQuestionIndex < questions.length - 1 ? (
                 <button
                   onClick={goToNextQuestion}
@@ -208,7 +204,12 @@ const OnlineTest = () => {
               ) : (
                 <button
                   onClick={handleSubmit}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  disabled={!(allQuestionsAnswered || timerEnded)}
+                  className={`px-6 py-2 rounded-lg ${
+                    allQuestionsAnswered || timerEnded
+                      ? "bg-green-600 text-white hover:bg-green-700"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
                 >
                   Submit Test
                 </button>
@@ -220,7 +221,6 @@ const OnlineTest = () => {
         {/* Question Navigator Sidebar */}
         <div className="md:w-1/3 bg-white rounded-lg shadow-lg p-6 h-fit sticky top-4">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Question Navigator</h3>
-          {/* Added scrollbar with max height */}
           <div
             className="grid grid-cols-5 gap-3 overflow-y-auto max-h-[400px] p-4"
             style={{ scrollbarWidth: "thin" }}
@@ -233,7 +233,6 @@ const OnlineTest = () => {
                   selectedAnswers[q.id]
                     ? "bg-green-100 text-green-800 border border-green-300"
                     : "bg-gray-100 text-gray-800 border border-gray-300"
-        
                 } ${
                   currentQuestionIndex === index ? "ring-2 ring-blue-500" : ""
                 }`}
@@ -254,7 +253,12 @@ const OnlineTest = () => {
           </div>
           <button
             onClick={handleSubmit}
-            className="w-full mt-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            disabled={!(allQuestionsAnswered || timerEnded)}
+            className={`w-full mt-6 py-2 rounded-lg ${
+              allQuestionsAnswered || timerEnded
+                ? "bg-red-600 text-white hover:bg-red-700"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
           >
             Submit Test Now
           </button>

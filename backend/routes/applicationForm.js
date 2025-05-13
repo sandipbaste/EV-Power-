@@ -41,15 +41,22 @@ const sendConfirmationEmail = async (firstName, email) => {
   await transporter.sendMail(userMailOptions);
 };
 
-const sendAptitudeEmail = async (firstName, email) => {
+const sendAptitudeEmail = async (firstName, email, mobile) => {
   const aptitudeMailOptions = {
     from: process.env.EMAIL,
     to: email,
     subject: 'Aptitude Test Invitation',
-    html: `<p>Hi ${firstName},</p>
-           <p>You're invited to take the aptitude test.</p>
-           <a href="${process.env.CLIENT_BASE_URL}" target="_blank" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px;">Start Test</a>
-           <p>Best of luck!</p>`
+    html: `
+      <p>Hi ${firstName},</p>
+      <p>You're invited to take the aptitude test.</p>
+      <p><strong>Login Credentials:</strong></p>
+      <ul>
+        <li><strong>Login ID:</strong> ${email}</li>
+        <li><strong>Password:</strong> ${mobile}</li>
+      </ul>
+      <p>Click the button below to start the test:</p>
+      <a href="${process.env.CLIENT_BASE_URL}" target="_blank" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px;">Start Test</a>
+      <p>Best of luck!</p>`
   };
   await transporter.sendMail(aptitudeMailOptions);
 };
@@ -125,8 +132,8 @@ applicationForm.post(
 
       // Send aptitude test email after 2 minutes
       setTimeout(() => {
-        sendAptitudeEmail(firstName, email).catch(console.error);
-      }, 1* 60 * 1000); // 2 minutes
+        sendAptitudeEmail(firstName, email, mobile).catch(console.error);
+      }, 2 * 60 * 1000); // 2 minutes
 
       res.status(200).json({
         message: 'Application submitted successfully. Emails are being sent.',

@@ -101,6 +101,7 @@ const ApplicationForm = () => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+      
     });
 
     console.log(response.data);
