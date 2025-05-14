@@ -1,10 +1,13 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const ApplicationForm = require('../Models/applicationForm');
+const AptitudeUser = require('../Models/userAptitudeLogin');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 const path = require('path');
 const dotenv = require('dotenv');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 dotenv.config();
 
 const applicationForm = express.Router();
@@ -30,7 +33,12 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Helper functions
+// Generate secure random password
+const generateRandomPassword = () => {
+  return crypto.randomBytes(4).toString('hex'); // 8-character hex password
+};
+
+// Send confirmation email to user
 const sendConfirmationEmail = async (firstName, email) => {
   const userMailOptions = {
     from: process.env.EMAIL,
@@ -41,7 +49,8 @@ const sendConfirmationEmail = async (firstName, email) => {
   await transporter.sendMail(userMailOptions);
 };
 
-const sendAptitudeEmail = async (firstName, email, mobile) => {
+// Send aptitude test email to user
+const sendAptitudeEmail = async (firstName, email, password) => {
   const aptitudeMailOptions = {
     from: process.env.EMAIL,
     to: email,
@@ -52,7 +61,7 @@ const sendAptitudeEmail = async (firstName, email, mobile) => {
       <p><strong>Login Credentials:</strong></p>
       <ul>
         <li><strong>Login ID:</strong> ${email}</li>
-        <li><strong>Password:</strong> ${mobile}</li>
+        <li><strong>Password:</strong> ${password}</li>
       </ul>
       <p>Click the button below to start the test:</p>
       <a href="${process.env.CLIENT_BASE_URL}" target="_blank" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px;">Start Test</a>
@@ -61,6 +70,7 @@ const sendAptitudeEmail = async (firstName, email, mobile) => {
   await transporter.sendMail(aptitudeMailOptions);
 };
 
+// Send admin email with applicant data and resume
 const sendAdminEmail = async (firstName, lastName, email, mobile, resumePath) => {
   const adminMailOptions = {
     from: process.env.EMAIL,
@@ -77,7 +87,7 @@ const sendAdminEmail = async (firstName, lastName, email, mobile, resumePath) =>
   await transporter.sendMail(adminMailOptions);
 };
 
-// POST route
+// Application form route
 applicationForm.post(
   '/applicationform',
   upload.single('resume'),
@@ -105,11 +115,13 @@ applicationForm.post(
       const { firstName, lastName, address, mobile, email, graduation, cgpa, position } = req.body;
       const resumePath = req.file.path;
 
+      // Check if user already applied
       const existingUser = await ApplicationForm.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ error: 'User with this email already exists' });
       }
 
+      // Save application form
       const newApplication = new ApplicationForm({
         firstName,
         lastName,
@@ -124,6 +136,17 @@ applicationForm.post(
 
       const savedApplication = await newApplication.save();
 
+      // Generate random password and hash it
+      const aptitudePassword = generateRandomPassword();
+      const hashedPassword = await bcrypt.hash(aptitudePassword, 10);
+
+      // Save aptitude user login
+      const aptitudeUser = new AptitudeUser({
+        email,
+        hashedPassword
+      });
+      await aptitudeUser.save();
+
       // Send confirmation email
       sendConfirmationEmail(firstName, email).catch(console.error);
 
@@ -132,7 +155,7 @@ applicationForm.post(
 
       // Send aptitude test email after 2 minutes
       setTimeout(() => {
-        sendAptitudeEmail(firstName, email, mobile).catch(console.error);
+        sendAptitudeEmail(firstName, email, aptitudePassword).catch(console.error);
       }, 2 * 60 * 1000); // 2 minutes
 
       res.status(200).json({

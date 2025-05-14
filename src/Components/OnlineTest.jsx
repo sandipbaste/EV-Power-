@@ -47,7 +47,7 @@ const OnlineTest = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
 
-  const [timeLeft, setTimeLeft] = useState(60 * 1); // 60 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes in seconds
   const [isSubmitted, setIsSubmitted] = useState(false);
   const timerRef = useRef(null);
 
