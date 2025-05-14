@@ -11,7 +11,7 @@ connectToMongo()
 const app = express()
 
 // Allow requests from your frontend origin
-app.use(cors())
+app.use(cors());
 
 app.use(express.json());
 app.use('/api', applicationForm)

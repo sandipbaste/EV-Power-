@@ -26,7 +26,7 @@ const App = () => {
             <Route exact path='/form-respones' element={<FormResponce />} />
             <Route path="/" element={<JobPositions />} />
             <Route path="/experience-form/:title/:details/:location" element={<ExperienceForm />} />
-            <Route path="/aptitude-login" element={ <AptitudeLogin/> } />
+            <Route path="/user-aptitude-login" element={ <AptitudeLogin/> } />
           </Routes>
           <Footer />
         </BrowserRouter>
