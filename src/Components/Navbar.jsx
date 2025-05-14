@@ -64,6 +64,14 @@ const Navbar = () => {
             JoinUs
           </Link>
 
+
+          <Link
+            to='/signin' 
+            className="hidden md:block bg-gradient-to-r from-blue-300 to-blue-400 text-navy font-bold px-4 py-2 rounded-lg shadow-md hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
+          >
+            Login
+          </Link>
+
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button 

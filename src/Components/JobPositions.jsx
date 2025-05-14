@@ -21,20 +21,21 @@ const JobPositions = () => {
   const navigate = useNavigate();
 
   const initialJobs = [
-    { title: "Software Engineer", details: "Experience: 2+ Years", location: "Pune" },
-    { title: "Battery Technician", details: "Experience: 1+ Years", location: "Chennai" },
-    { title: "HR Manager", details: "Experience: 3+ Years", location: "Mumbai" },
+    {img: "https://images.pexels.com/photos/3861958/pexels-photo-3861958.jpeg?auto=compress&cs=tinysrgb&w=600",  title: "Software Engineer", details: "Experience: 2+ Years", location: "Pune", description: "Responsible for designing, developing, testing, and maintaining software applications." },
+    {img: "https://images.pexels.com/photos/9243229/pexels-photo-9243229.jpeg?auto=compress&cs=tinysrgb&w=600", title: "Battery Technician", details: "Experience: 1+ Years", location: "Chennai", description: "Responsible for assembling, testing, and maintaining battery systems." },
+    {img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600", title: "HR Manager", details: "Experience: 3+ Years", location: "Mumbai", description: "Responsible for managing HR functions including recruitment, employee relations, and performance management." },
   ];
 
   const additionalJobs = [
-    { title: "Marketing Specialist", details: "Experience: 2+ Years", location: "Banglore" },
-    { title: "Electrical Engineer", details: "Experience: 3+ Years", location: "Pune" },
-    { title: "Customer Support", details: "Experience: 1+ Years", location: "Nashik" },
-    { title: "Sales Executive", details: "Experience: 2+ Years", location: "Nashik" },
-    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Pune" },
-    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Delhi" },
+    {title: "Marketing Specialist", details: "Experience: 2+ Years", location: "Banglore", description: "Responsible for developing and executing marketing strategies to promote products and services." },
+    { title: "Electrical Engineer", details: "Experience: 3+ Years", location: "Pune", description: "Responsible for designing, developing, and testing electrical systems and components." },
+    { title: "Customer Support", details: "Experience: 1+ Years", location: "Nashik", description: "Responsible for providing support to customers via phone, email, and chat." },
+    { title: "Sales Executive", details: "Experience: 2+ Years", location: "Nashik" , description: "Responsible for selling products and services to customers." },
+    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Pune" ,  description: "Responsible for analyzing data and providing insights to support business decisions." },
+    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Delhi", description: "Responsible for analyzing data and providing insights to support business decisions." },
   ];
 
+  
   const [showAllJobs, setShowAllJobs] = useState(false);
   const [jobs, setJobs] = useState(initialJobs);
 
@@ -47,12 +48,13 @@ const JobPositions = () => {
     setShowAllJobs(!showAllJobs);
   };
 
-  const handleApplyNow = (title, details, location) => {
+  const handleApplyNow = (img,title, details, location) => {
     navigate(`/experience-form/${title}/${details}/${location}`);
   };
 
-  // 🔁 Sync jobs to backend on mount
-  
+  const handleReadMore = (title, details, location, description, img) => {
+    navigate(`/job-details/${img}/${title}/${details}/${location}/${description}`);
+  }
 
   return (
     <section className="bg-white py-16 text-gray-900">
@@ -61,13 +63,14 @@ const JobPositions = () => {
         Current Job Positions
       </h2>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 align-items-center justify-center">
         {(showAllJobs ? jobs : jobs.slice(0, initialJobs.length)).map((job, index) => (
           <div
             key={`${job.index}-${job.location}-${index}`}
-            className="bg-white border-l-8 border-[#1e293b] rounded-xl shadow-md p-6 transition duration-300 hover:scale-[1.02] hover:shadow-2xl"
+            className="bg-white border-l-2 border-[#1e293b] rounded-xl shadow-md p-6 transition duration-300 hover:scale-[1.02] hover:shadow-2xl transform hover:shadow-lg h-[350px] w-[350px] "
           >
-            <div className="flex items-center gap-3 mb-4">
+            <img src={job.img} alt="" /> 
+            <div className="flex items-center gap-3 ">
               <Briefcase className="text-[#1e293b]" />
               <h3 className="text-xl font-bold">{job.title}</h3>
             </div>
@@ -80,13 +83,15 @@ const JobPositions = () => {
                 <MapPin size={16} className="text-[#1e293b]" />
                 <span>{job.location}</span>
               </div>
-            </div>
+            
+           
+            
             <button
-              onClick={() => handleApplyNow(job.title, job.details, job.location)}
-              className="w-full bg-[#1e293b] hover:bg-[#334155] text-[#FFD700] font-semibold py-2 rounded-lg shadow-md transition duration-300"
-            >
-              Apply Now
-            </button>
+              onClick={() => handleReadMore(job.title, job.details, job.location, job.description)}
+              className="text-blue-500 underline hover:text-blue-700 mb-4 align-items-start"
+              > View Job... </button>
+               </div>
+
           </div>
         ))}
       </div>
