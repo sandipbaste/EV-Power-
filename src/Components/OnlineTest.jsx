@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import Results from './Results';
+import { useNavigate } from 'react-router-dom';
 
 const OnlineTest = () => {
   const [questions] = useState([
@@ -44,19 +46,46 @@ const OnlineTest = () => {
     { id: 40, text: "Which renewable energy source is commonly used to charge electric vehicles?", options: ["Solar energy", "Wind energy", "Hydropower", "Geothermal"], answer: "Solar energy" }
   ]);
 
+  const navigate = useNavigate()
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(60 * 0.2); // 60 minutes in seconds
   const [isSubmitted, setIsSubmitted] = useState(false);
   const timerRef = useRef(null);
+  const selectedAnswersRef = useRef({});
+
+  // Update ref whenever selectedAnswers changes
+  useEffect(() => {
+    selectedAnswersRef.current = selectedAnswers;
+  }, [selectedAnswers]);
 
   // Check if all questions are answered
   const allQuestionsAnswered = Object.keys(selectedAnswers).length === questions.length;
 
-  // const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false)
   // Check if timer has ended
   const timerEnded = timeLeft <= 0;
+
+  // Use useCallback to create a stable reference for handleSubmit
+  const handleSubmit = useCallback(() => {
+    clearInterval(timerRef.current);
+    setIsSubmitted(true);
+    
+    // Log to console
+    console.log("Submitted answers:", selectedAnswersRef.current);
+    
+    let correctAnswers = 0;
+    let totalAnswered = Object.keys(selectedAnswersRef.current).length;
+    
+    questions.forEach(question => {
+      if (selectedAnswersRef.current[question.id] === question.answer) {
+        correctAnswers++;
+      }
+    });
+    
+    console.log(`Results: ${correctAnswers}/${questions.length} correct answers`);
+    console.log(`Questions answered: ${totalAnswered}/${questions.length}`);
+    console.log("Score:", ((correctAnswers / questions.length) * 100).toFixed(1) + "%");
+  }, [questions]);
 
   // Handle timer countdown
   useEffect(() => {
@@ -72,8 +101,7 @@ const OnlineTest = () => {
     }, 1000);
   
     return () => clearInterval(timerRef.current);
-  }, []);
-  
+  }, [handleSubmit]);
 
   // Format time as MM:SS
   const formatTime = (seconds) => {
@@ -105,26 +133,18 @@ const OnlineTest = () => {
     setCurrentQuestionIndex(index);
   };
 
-  const handleSubmit = () => {
-    clearInterval(timerRef.current);
-    setIsSubmitted(true);
-    console.log("Submitted answers:", selectedAnswers);
-  };
-
   const currentQuestion = questions[currentQuestionIndex];
 
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Test Submitted Successfully!</h1>
-          <p className="text-lg text-gray-600 mb-6">
-            You answered {Object.keys(selectedAnswers).length} out of {questions.length} questions.
-          </p>
-        </div>
-      </div>
-    );
-  }
+useEffect(() => {
+    if (isSubmitted) {
+      navigate('/results', {
+        state: {
+          questions: questions,
+          selectedAnswers: selectedAnswersRef.current
+        }
+      });
+    }
+  }, [isSubmitted, navigate, questions]);
 
   return (
     <div className="my-20 bg-gray-100 p-4">
@@ -222,7 +242,7 @@ const OnlineTest = () => {
         <div className="md:w-1/3 bg-white rounded-lg shadow-lg p-6 h-fit sticky top-4">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Question Navigator</h3>
           <div
-            className="grid grid-cols-5 gap-3 overflow-y-auto max-h-[400px] p-4"
+            className="grid grid-cols-5 gap-3 overflow-y-auto max-h-96 p-4"
             style={{ scrollbarWidth: "thin" }}
           >
             {questions.map((q, index) => (
@@ -247,10 +267,24 @@ const OnlineTest = () => {
               <span className="text-sm text-gray-600">Answered</span>
             </div>
             <div className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-yellow-100 border border-yellow-300 mr-2"></div>
-              <span className="text-sm text-gray-600">Skipped/Not Attempted</span>
+              <div className="w-4 h-4 rounded-full bg-gray-100 border border-gray-300 mr-2"></div>
+              <span className="text-sm text-gray-600">Not Attempted</span>
             </div>
           </div>
+          
+          {/* Progress */}
+          <div className="mt-4 p-3 bg-gray-50 rounded">
+            <div className="text-sm text-gray-600">
+              Progress: {Object.keys(selectedAnswers).length}/{questions.length}
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+              <div 
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                style={{ width: `${(Object.keys(selectedAnswers).length / questions.length) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+          
           <button
             onClick={handleSubmit}
             disabled={!(allQuestionsAnswered || timerEnded)}
