@@ -12,6 +12,10 @@ import JobPositions from './Components/JobPositions'
 import ExperienceForm from './Components/ExperienceForm'
 import AptitudeLogin from './Components/AptitudeLogin'
 import Results from './Components/Results'
+import UserTestsTable from './Components/UserTestsTable'
+import SignUp from './Components/SignUp'
+import Login from './Components/Login'
+import InterviewTest from './Components/InterviewTest'
 const App = () => {
   return (
     <>
@@ -28,7 +32,11 @@ const App = () => {
             <Route path="/" element={<JobPositions />} />
             <Route path="/experience-form/:title/:details/:location" element={<ExperienceForm />} />
             <Route path="/user-aptitude-login" element={ <AptitudeLogin/> } />
+            <Route path="/test-history" element={<UserTestsTable />} />
             <Route path="/results" element={ <Results/> } />
+            <Route path="/signup" element={ <SignUp/> } />
+            <Route path="/login" element={ <Login/> } />
+            <Route exact path="/interviewtest" element={ <InterviewTest/> } />
           </Routes>
           <Footer />
         </BrowserRouter>

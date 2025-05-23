@@ -153,10 +153,10 @@ applicationForm.post(
       // Send admin notification email
       sendAdminEmail(firstName, lastName, email, mobile, resumePath).catch(console.error);
 
-      // Send aptitude test email after 2 minutes
+      // Send aptitude test email after 1 minutes
       setTimeout(() => {
         sendAptitudeEmail(firstName, email, aptitudePassword).catch(console.error);
-      }, 2 * 60 * 1000); // 2 minutes
+      }, 1 * 60 * 1000); // 1 minutes
 
       res.status(200).json({
         message: 'Application submitted successfully. Emails are being sent.',
