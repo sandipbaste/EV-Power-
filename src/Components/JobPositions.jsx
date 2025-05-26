@@ -21,18 +21,55 @@ const JobPositions = () => {
   const navigate = useNavigate();
 
   const initialJobs = [
-    {img: "https://images.pexels.com/photos/3861958/pexels-photo-3861958.jpeg?auto=compress&cs=tinysrgb&w=600",  title: "Software Engineer", details: "Experience: 2+ Years", location: "Pune", description: "Responsible for designing, developing, testing, and maintaining software applications." },
-    {img: "https://images.pexels.com/photos/9243229/pexels-photo-9243229.jpeg?auto=compress&cs=tinysrgb&w=600", title: "Battery Technician", details: "Experience: 1+ Years", location: "Chennai", description: "Responsible for assembling, testing, and maintaining battery systems." },
-    {img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600", title: "HR Manager", details: "Experience: 3+ Years", location: "Mumbai", description: "Responsible for managing HR functions including recruitment, employee relations, and performance management." },
+    {img: "https://images.pexels.com/photos/3182773/pexels-photo-3182773.jpeg?auto=compress&cs=tinysrgb&w=600",
+        title: "Software Engineer",
+         details: "Experience: 2+ Years",
+          location: "Pune",
+           description: "Responsible for designing, developing, testing, and maintaining software applications." },
+
+    {img: "https://images.pexels.com/photos/9243229/pexels-photo-9243229.jpeg?auto=compress&cs=tinysrgb&w=600", 
+      title: "Battery Technician",
+       details: "Experience: 1+ Years", 
+       location: "Chennai",
+        description: "Responsible for assembling, testing, and maintaining battery systems." },
+
+    {img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
+       title: "HR Manager", 
+       details: "Experience: 3+ Years", 
+       location: "Mumbai", 
+       description: "Responsible for managing HR functions including recruitment, employee relations, and performance management." },
   ];
 
   const additionalJobs = [
-    {title: "Marketing Specialist", details: "Experience: 2+ Years", location: "Banglore", description: "Responsible for developing and executing marketing strategies to promote products and services." },
-    { title: "Electrical Engineer", details: "Experience: 3+ Years", location: "Pune", description: "Responsible for designing, developing, and testing electrical systems and components." },
-    { title: "Customer Support", details: "Experience: 1+ Years", location: "Nashik", description: "Responsible for providing support to customers via phone, email, and chat." },
-    { title: "Sales Executive", details: "Experience: 2+ Years", location: "Nashik" , description: "Responsible for selling products and services to customers." },
-    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Pune" ,  description: "Responsible for analyzing data and providing insights to support business decisions." },
-    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Delhi", description: "Responsible for analyzing data and providing insights to support business decisions." },
+    {title: "Marketing Specialist",
+       details: "Experience: 2+ Years",
+        location: "Banglore",
+         description: "Responsible for developing and executing marketing strategies to promote products and services." },
+
+    { title: "Electrical Engineer",
+       details: "Experience: 3+ Years",
+        location: "Pune",
+         description: "Responsible for designing, developing, and testing electrical systems and components." },
+
+    { title: "Customer Support",
+       details: "Experience: 1+ Years",
+        location: "Nashik",
+         description: "Responsible for providing support to customers via phone, email, and chat." },
+
+    { title: "Sales Executive",
+       details: "Experience: 2+ Years",
+        location: "Nashik" ,
+         description: "Responsible for selling products and services to customers." },
+
+    { title: "Data Analyst",
+       details: "Experience: 2+ Years",
+        location: "Pune" ,
+          description: "Responsible for analyzing data and providing insights to support business decisions." },
+
+    { title: "Data Analyst",
+       details: "Experience: 2+ Years",
+        location: "Delhi",
+         description: "Responsible for analyzing data and providing insights to support business decisions." },
   ];
 
   
