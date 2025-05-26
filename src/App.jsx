@@ -10,7 +10,11 @@ import FormResponce from './Components/FormResponce'
 import Footer from './Components/Footer'
 import JobPositions from './Components/JobPositions'
 import ExperienceForm from './Components/ExperienceForm'
-import AptitudeLogin from './Components/AptitudeLogin'
+// import AptitudeLogin from './Components/AptitudeLogin'
+import SignIn from './Components/SignIn'
+import SignUp from './Components/SignUp'
+import JobDetails from './Components/JobDetails'
+
 const App = () => {
   return (
     <>
@@ -26,7 +30,12 @@ const App = () => {
             <Route exact path='/form-respones' element={<FormResponce />} />
             <Route path="/" element={<JobPositions />} />
             <Route path="/experience-form/:title/:details/:location" element={<ExperienceForm />} />
-            <Route path="/user-aptitude-login" element={ <AptitudeLogin/> } />
+
+            <Route path="/job-details/:img/:title/:details/:location/:description" element={<JobDetails />} />
+
+
+            <Route exact path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
           </Routes>
           <Footer />
         </BrowserRouter>
