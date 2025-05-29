@@ -12,7 +12,7 @@ import JobPositions from './Components/JobPositions'
 import ExperienceForm from './Components/ExperienceForm'
 import SignIn from './Components/SignIn'
 import SignUp from './Components/SignUp'
-import JobDetails from './Components/JobDetails'
+import JobDetails from "./components/JobDetails";
 
 const App = () => {
   return (
@@ -30,7 +30,7 @@ const App = () => {
             <Route path="/" element={<JobPositions />} />
             <Route path="/experience-form/:title/:details/:location" element={<ExperienceForm />} />
 
-            <Route path="/job-details/:img/:title/:details/:location/:description" element={<JobDetails />} />
+            <Route path="/job-details/:id" element={<JobDetails />} />
 
 
             <Route exact path="/signin" element={<SignIn />} />

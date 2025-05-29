@@ -1,32 +1,46 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const JobDetails = () => {
-  const { title, details, location, description, img } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { job } = location.state || {};
+
+  if (!job) {
+    return (
+      <div className="p-8 text-center">
+        <p>Job not found.</p>
+        <button
+          onClick={() => navigate('/')}
+          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Back to Jobs
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <section className="bg-white py-16 text-gray-900">
-      <div className="container mx-auto px-6">
-        <img src={img} alt="" />
-        <h2 className="text-4xl font-bold text-[#1e293b] mb-6">{title}</h2>
-        <div className="text-lg text-gray-800 space-y-4">
-          <p><strong>Experience Required:</strong> {details}</p>
-          <p><strong>Location:</strong> {location}</p>
-          <p className="mt-4">
-            <strong>Job Description:</strong> {description}
-          </p>
-        </div>
-
-         <button
-              onClick={() => handleApplyNow(job.img, job.title, job.details, job.location)}
-              className="w-[150px] bg-[#1e293b] hover:bg-[#334155] text-[#FFD700] font-semibold py-2 rounded-lg shadow-md transition duration-300 mt-6"
-            >
-              Apply Now
-            </button>
+    <div className="p-8">
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-4 text-blue-600 hover:underline"
+      >
+        ← Back
+      </button>
+      <div className="max-w-3xl mx-auto bg-white p-6 shadow rounded">
+        <img
+          src={job.image}
+          alt={job.title}
+          className="w-full h-60 object-cover rounded mb-6"
+        />
+        <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
+        <p className="text-gray-600 mb-1">{job.details}</p>
+        <p className="text-gray-600 mb-4">{job.location}</p>
+        <p className="text-lg text-gray-800">{job.description}</p>
       </div>
-    </section>
+    </div>
   );
 };
 
 export default JobDetails;
- 

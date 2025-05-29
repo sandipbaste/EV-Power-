@@ -57,20 +57,22 @@ const Navbar = () => {
           </ul>
 
           {/* Login Button */}
-          <Link
-            to='/join-us' 
-            className="hidden md:block bg-gradient-to-r from-blue-300 to-blue-400 text-navy font-bold px-4 py-2 rounded-lg shadow-md hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
-          >
-            JoinUs
-          </Link>
+         <div className="hidden md:flex gap-4">
+            <Link
+              to='/join-us' 
+              className="bg-gradient-to-r from-blue-300 to-blue-400 text-navy font-bold px-4 py-2 rounded-lg shadow-md hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
+            >
+              JoinUs
+            </Link>
 
+            <Link
+              to='/signin' 
+              className="bg-gradient-to-r from-blue-300 to-blue-400 text-navy font-bold px-4 py-2 rounded-lg shadow-md hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
+            >
+              Login
+            </Link>
+            </div>
 
-          <Link
-            to='/signin' 
-            className="hidden md:block bg-gradient-to-r from-blue-300 to-blue-400 text-navy font-bold px-4 py-2 rounded-lg shadow-md hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
-          >
-            Login
-          </Link>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
