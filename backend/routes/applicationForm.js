@@ -49,6 +49,44 @@ const sendConfirmationEmail = async (firstName, email) => {
   await transporter.sendMail(userMailOptions);
 };
 
+
+//send aptitude date
+const sendScheduledAptitudeEmail = async (firstName, email, password) => {
+  const testDate = new Date();
+  testDate.setDate(testDate.getDate() + 2); // Set to 2 days from now
+  testDate.setHours(11, 0, 0, 0); // Set time to 11:00 AM
+
+  const formattedDateTime = testDate.toLocaleString('en-IN', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'Asia/Kolkata' // Ensures correct timezone for India
+  });
+
+  const aptitudeMailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: 'Your Scheduled Aptitude Test Date & Time',
+    html: `
+      <p>Hi ${firstName},</p>
+      <p>Your aptitude test is scheduled for <strong>${formattedDateTime}</strong>.</p>
+      <p>Please login using the following credentials:</p>
+      <ul>
+        <li><strong>Username:</strong> ${email}</li>
+        <li><strong>Password:</strong> ${password}</li>
+      </ul>
+      <p>Best of luck!</p>
+    `,
+  };
+
+  await transporter.sendMail(aptitudeMailOptions);
+};
+
+
+
 // Send aptitude test email to user
 const sendAptitudeEmail = async (firstName, email, password) => {
   const aptitudeMailOptions = {
@@ -138,25 +176,31 @@ applicationForm.post(
 
       // Generate random password and hash it
       const aptitudePassword = generateRandomPassword();
-      const hashedPassword = await bcrypt.hash(aptitudePassword, 10);
+      const password = await bcrypt.hash(aptitudePassword, 10);
 
       // Save aptitude user login
       const aptitudeUser = new AptitudeUser({
         email,
-        hashedPassword
+        password
       });
       await aptitudeUser.save();
 
       // Send confirmation email
       sendConfirmationEmail(firstName, email).catch(console.error);
 
+      // send Aptitude email
+      setTimeout(()=>{
+          sendScheduledAptitudeEmail(firstName, email, aptitudePassword).catch(console.error)
+      }, 1 * 60 * 1000)
+    
+
       // Send admin notification email
       sendAdminEmail(firstName, lastName, email, mobile, resumePath).catch(console.error);
 
-      // Send aptitude test email after 2 minutes
+      // Send aptitude test email after 1 minutes
       setTimeout(() => {
         sendAptitudeEmail(firstName, email, aptitudePassword).catch(console.error);
-      }, 2 * 60 * 1000); // 2 minutes
+      }, 2 * 60 * 1000); // 1 minutes
 
       res.status(200).json({
         message: 'Application submitted successfully. Emails are being sent.',
