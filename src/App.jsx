@@ -2,7 +2,7 @@ import React from 'react'
 import Layout from './Components/Layout'
 import HomeSection from './Components/HomeSection'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import ApplicationForm from './Components/ApplicationForm'
+// import ApplicationFormModal from './Components/ApplicationFormModal'
 import OnlineTest from './Components/OnlineTest'
 import About from './Components/About'
 import EmployeeBenefits from './Components/EmployeeBenefits'
@@ -27,7 +27,7 @@ const App = () => {
             <Route exact path='/onlinetest' element={<OnlineTest />} />
             <Route exact path='/about' element={<About />} />
             <Route exact path='/emp-benefits' element={<EmployeeBenefits />} />
-            <Route exact path='/join-us' element={<ApplicationForm />} />
+            {/* <Route exact path='/join-us' element={<ApplicationFormModal />} /> */}
             <Route exact path='/form-respones' element={<FormResponce />} />
             <Route path="/" element={<JobPositions />} />
             <Route path="/experience-form/:title/:details/:location" element={<ExperienceForm />} />

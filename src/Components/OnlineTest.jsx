@@ -1,13 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 
 const OnlineTest = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  // const {email} = location.state?.email;
+  const { email} = location.state || {}
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(60 * 1); 
+  const [timeLeft, setTimeLeft] = useState(60 * 0.5); // 60 minutes
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,7 +22,7 @@ const OnlineTest = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/questions');
+        const response = await axios.get('http://localhost:5000/api/aptitude');
         
         if (!response.data || response.data.length === 0) {
           throw new Error('No questions available in the database');
@@ -41,12 +45,6 @@ const OnlineTest = () => {
     selectedAnswersRef.current = selectedAnswers;
   }, [selectedAnswers]);
 
-  // Check if all questions are answered
-  const allQuestionsAnswered = Object.keys(selectedAnswers).length === questions.length;
-
-  // Check if timer has ended
-  const timerEnded = timeLeft <= 0;
-
   // Handle form submission
   const handleSubmit = useCallback(() => {
     clearInterval(timerRef.current);
@@ -59,17 +57,33 @@ const OnlineTest = () => {
       }
     });
 
-    navigate('/results', {
-      state: {
-        questions,
-        selectedAnswers: selectedAnswersRef.current,
-        score: correctAnswers,
-        totalQuestions: questions.length,
-        timeSpent: (60 * 60 - timeLeft),
-        percentage: Math.round((correctAnswers / questions.length) * 100)
-      }
+    const testResult = {
+      questions,
+      selectedAnswers: {...selectedAnswersRef.current},
+      score: correctAnswers,
+      totalQuestions: questions.length,
+      timeSpent: (60 * 60 - timeLeft),
+      percentage: Math.round((correctAnswers / questions.length) * 100),
+      testDate: new Date().toISOString(),
+      // email: localStorage.getItem('userEmail') || 'anonymous@example.com'
+    };
+
+    // Save to localStorage
+    const savedTests = JSON.parse(localStorage.getItem('userTests') || '[]');
+    savedTests.unshift(testResult); // Add new test to beginning of array
+    localStorage.setItem('userTests', JSON.stringify(savedTests));
+
+    // Navigate to test history with the new test data
+    navigate('/test-history', { 
+      state: { 
+        email: email,
+        allTests: savedTests,
+        latestTest: testResult,
+        fromTest: true 
+      } 
     });
-  }, [navigate, questions, timeLeft]);
+    // console.log(email)
+  }, [navigate, questions, timeLeft, email]);
 
   // Handle timer countdown
   useEffect(() => {
@@ -167,6 +181,8 @@ const OnlineTest = () => {
   }
 
   const currentQuestion = questions[currentQuestionIndex];
+  const allQuestionsAnswered = Object.keys(selectedAnswers).length === questions.length;
+  const timerEnded = timeLeft <= 0;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

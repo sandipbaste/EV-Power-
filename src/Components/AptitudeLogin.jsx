@@ -34,7 +34,14 @@ const AptitudeLogin = () => {
       toast.success('Login successful!');
       localStorage.setItem('token', res.data.authtoken);
       setTimeout(() => {
-        navigate('/onlinetest'); // ✅ Redirect after login
+        navigate('/onlinetest', 
+          {
+            state: {
+              email: formData.email
+            }
+          }
+        ); // ✅ Redirect after login
+        // console.log(formData.email);
       }, 1000);
     } catch (err) {
       const errorMsg = err.response?.data?.error || 'Login failed. Check credentials.';

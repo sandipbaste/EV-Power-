@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-const questionSchema = new mongoose.Schema({
-  text: {
+const AptitudeSchema = new mongoose.Schema({
+  question: {
     type: String,
-    required: [true, 'Question text is required'],
+    required: [true, 'Question is required'],
     trim: true,
-    minlength: [10, 'Question text must be at least 10 characters'],
-    maxlength: [500, 'Question text cannot exceed 500 characters'],
+    minlength: [10, 'Question must be at least 10 characters'],
+    maxlength: [500, 'Question cannot exceed 500 characters'],
     unique: true, // Ensures no duplicate questions
     index: true // Improves query performance
   },
@@ -59,7 +59,7 @@ const questionSchema = new mongoose.Schema({
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'HrLogin'
   },
   createdAt: {
     type: Date,
@@ -72,7 +72,7 @@ const questionSchema = new mongoose.Schema({
   },
   lastModifiedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'HrLogin'
   }
 }, {
   timestamps: true, // Automatically manages createdAt and updatedAt
@@ -81,10 +81,10 @@ const questionSchema = new mongoose.Schema({
 });
 
 // Middleware to prevent duplicate questions
-questionSchema.pre('save', async function(next) {
+AptitudeSchema.pre('save', async function(next) {
   if (this.isNew) {
     const existingQuestion = await this.constructor.findOne({ 
-      text: this.text 
+      question: this.question 
     });
     
     if (existingQuestion) {
@@ -95,30 +95,30 @@ questionSchema.pre('save', async function(next) {
 });
 
 // Update timestamp and modifier before saving
-questionSchema.pre('save', function(next) {
+AptitudeSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
-  // In a real app, you'd set lastModifiedBy from auth context
+  // In a real app, you'd set lastModifiedBy from auth conquestion
   next();
 });
 
 // Indexes for better query performance
-questionSchema.index({ text: 'text' }); // Full-text search
-questionSchema.index({ category: 1, difficulty: 1 });
-questionSchema.index({ isActive: 1 });
+AptitudeSchema.index({ question: 'question' }); // Full-question search
+AptitudeSchema.index({ category: 1, difficulty: 1 });
+AptitudeSchema.index({ isActive: 1 });
 
 // Virtual for formatted display
-questionSchema.virtual('displayText').get(function() {
-  return `${this.text} (${this.category}, ${this.difficulty})`;
+AptitudeSchema.virtual('displayquestion').get(function() {
+  return `${this.question} (${this.category}, ${this.difficulty})`;
 });
 
 // Static method for bulk insert with duplicate prevention
-questionSchema.statics.insertQuestions = async function(questions) {
+AptitudeSchema.statics.insertQuestions = async function(questions) {
   const existingQuestions = await this.find({ 
-    text: { $in: questions.map(q => q.text) } 
+    question: { $in: questions.map(q => q.question) } 
   });
   
-  const existingTexts = new Set(existingQuestions.map(q => q.text));
-  const newQuestions = questions.filter(q => !existingTexts.has(q.text));
+  const existingquestions = new Set(existingQuestions.map(q => q.question));
+  const newQuestions = questions.filter(q => !existingquestions.has(q.question));
   
   if (newQuestions.length === 0) {
     return { insertedCount: 0, duplicates: questions.length };
@@ -132,8 +132,8 @@ questionSchema.statics.insertQuestions = async function(questions) {
 };
 
 // Query helper for active questions
-questionSchema.query.active = function() {
+AptitudeSchema.query.active = function() {
   return this.where({ isActive: true });
 };
 
-module.exports = mongoose.model('Question', questionSchema);
+module.exports = mongoose.model('aptitude', AptitudeSchema);
