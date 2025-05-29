@@ -7,7 +7,7 @@ const aptitudeUserSchema = new mongoose.Schema({
     required: true,
     unique: true // this is fine
   },
-  hashedPassword: {
+    password: {
     type: String,
     required: true
   },

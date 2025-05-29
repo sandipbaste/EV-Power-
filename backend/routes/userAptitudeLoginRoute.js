@@ -33,7 +33,7 @@ userAptitudeLoginRoute.post(
         });
       }
 
-      const passwordCompare = await bcrypt.compare(password, user.hashedPassword);
+      const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
         return res.status(400).json({
           success,
