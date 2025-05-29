@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import img from '../assets/slderimg.jpeg';
+import img from '../assets/slderimg.png';
 import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
