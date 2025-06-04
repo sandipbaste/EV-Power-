@@ -1,32 +1,28 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React from "react";
+import { useParams } from "react-router-dom";
 
 const JobDetails = () => {
-  const { title, details, location, description, img } = useParams();
+  const { img, title, details, location, description } = useParams();
 
   return (
-    <section className="bg-white py-16 text-gray-900">
-      <div className="container mx-auto px-6">
-        <img src={img} alt="" />
-        <h2 className="text-4xl font-bold text-[#1e293b] mb-6">{title}</h2>
-        <div className="text-lg text-gray-800 space-y-4">
-          <p><strong>Experience Required:</strong> {details}</p>
-          <p><strong>Location:</strong> {location}</p>
-          <p className="mt-4">
-            <strong>Job Description:</strong> {description}
-          </p>
+    <section className="py-16 bg-gray-50 text-gray-900">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          {img && (
+            <img
+              src={decodeURIComponent(img)}
+              alt={decodeURIComponent(title)}
+              className="w-full h-64 object-cover rounded mb-6"
+            />
+          )}
+          <h2 className="text-3xl font-bold mb-2">{decodeURIComponent(title)}</h2>
+          <p className="text-gray-600 mb-2">{decodeURIComponent(details)}</p>
+          <p className="text-gray-600 mb-4">Location: {decodeURIComponent(location)}</p>
+          <p className="text-gray-800">{decodeURIComponent(description)}</p>
         </div>
-
-         <button
-              onClick={() => handleApplyNow(job.img, job.title, job.details, job.location)}
-              className="w-[150px] bg-[#1e293b] hover:bg-[#334155] text-[#FFD700] font-semibold py-2 rounded-lg shadow-md transition duration-300 mt-6"
-            >
-              Apply Now
-            </button>
       </div>
     </section>
   );
 };
 
 export default JobDetails;
- 
