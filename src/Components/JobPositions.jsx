@@ -15,6 +15,8 @@ const JobPositions = () => {
       description:
         "Responsible for designing, developing, testing, and maintaining software applications.",
     },
+
+    
     {
       img: "https://images.pexels.com/photos/9243229/pexels-photo-9243229.jpeg?auto=compress&cs=tinysrgb&w=600",
       title: "Battery Technician",
