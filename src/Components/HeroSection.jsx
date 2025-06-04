@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import img from '../assets/slderimg.png';
 import { Link } from 'react-router-dom';
+import ApplicationFormModal from './ApplicationFormModal';
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
-
+  const [modal, setModal] = useState(false)
   useEffect(() => {
     // Trigger animation on mount
     setTimeout(() => setIsVisible(true), 100);
@@ -46,14 +47,18 @@ const HeroSection = () => {
           <p className='text-center opacity-70'>We are committed to shaping the future of clean energy through innovation and excellence.  
             Collaborate with industry leaders, grow your skills, and contribute to impactful projects that drive change worldwide.</p>
           <Link
-            to="/join-us"
-            className="inline-block px-8 py-4 bg-gradient-to-r from-blue-400 to-blue-500 text-white font-bold text-lg rounded-full shadow-lg hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-110 hover:shadow-2xl animate-bounce"
+            onClick={()=>setModal(true)}
+            className="inline-block px-8 py-4 bg-gradient-to-r from-blue-400 to-blue-500 text-white font-bold text-lg rounded-full shadow-lg hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-110 hover:shadow-2xl "
           >
             🚀 Apply Now
           </Link>
         </div>
       </div>
+<ApplicationFormModal isOpen={modal} onClose={() => setModal(false)} />
     </div>
+
+        
+          
   );
 };
 
