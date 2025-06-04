@@ -8,7 +8,7 @@ const JobPositions = () => {
 
   const initialJobs = [
     {
-      img: "https://images.pexels.com/photos/3182773/pexels-photo-3182773.jpeg?auto=compress&cs=tinysrgb&w=600",
+      img: "https://images.pexels.com/photos/3182773/pexels-photo-3182773.jpeg?auto=compress&cs=tinysrgb&w=",
       title: "Software Engineer",
       details: "Experience: 2+ Years",
       location: "Pune",
@@ -34,18 +34,18 @@ const JobPositions = () => {
         "Responsible for managing HR functions including recruitment, employee relations, and performance management.",
     },
     {
-      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
-      title: "HR Manager",
+      img: "https://images.pexels.com/photos/5292195/pexels-photo-5292195.jpeg?auto=compress&cs=tinysrgb&w=600",
+      title: " Battery Design Engineer",
       details: "Experience: 3+ Years",
-      location: "Mumbai",
+      location: "Bengaluru",
       description:
-        "Responsible for managing HR functions including recruitment, employee relations, and performance management.",
+        "Responsible for designing and prototyping lithium-ion battery packs and modules.",
     },
   ];
 
   const additionalJobs = [
     {
-      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
+      img: "https://images.pexels.com/photos/5716001/pexels-photo-5716001.jpeg?auto=compress&cs=tinysrgb&w=600",
       title: "Marketing Specialist",
       details: "Experience: 2+ Years",
       location: "Banglore",
@@ -53,7 +53,7 @@ const JobPositions = () => {
         "Responsible for developing and executing marketing strategies to promote products and services.",
     },
     {
-      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
+      img: "https://images.pexels.com/photos/9242289/pexels-photo-9242289.jpeg?auto=compress&cs=tinysrgb&w=600",
       title: "Electrical Engineer",
       details: "Experience: 3+ Years",
       location: "Pune",
@@ -61,7 +61,7 @@ const JobPositions = () => {
         "Responsible for designing, developing, and testing electrical systems and components.",
     },
     {
-      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
+      img: "https://images.pexels.com/photos/7682340/pexels-photo-7682340.jpeg?auto=compress&cs=tinysrgb&w=600",
       title: "Customer Support",
       details: "Experience: 1+ Years",
       location: "Nashik",
@@ -69,7 +69,7 @@ const JobPositions = () => {
         "Responsible for providing support to customers via phone, email, and chat.",
     },
     {
-      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
+      img: "https://images.pexels.com/photos/8463145/pexels-photo-8463145.jpeg?auto=compress&cs=tinysrgb&w=600",
       title: "Sales Executive",
       details: "Experience: 2+ Years",
       location: "Nashik",
@@ -77,69 +77,52 @@ const JobPositions = () => {
         "Responsible for selling products and services to customers.",
     },
     {
-      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
-      title: "Data Analyst",
+      img: "https://images.pexels.com/photos/19226354/pexels-photo-19226354/free-photo-of-engineer-fixing-core-swith-in-data-center-room.jpeg?auto=compress&cs=tinysrgb&w=600",
+      title: "Battery Management System (BMS) Engineer",
       details: "Experience: 2+ Years",
       location: "Pune",
       description:
-        "Responsible for analyzing data and providing insights to support business decisions.",
+       " Develop and maintain battery monitoring systems, firmware, and algorithms for safety and efficiency.",
     },
     {
-      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
-      title: "Data Analyst",
+      img: "https://images.pexels.com/photos/3862630/pexels-photo-3862630.jpeg?auto=compress&cs=tinysrgb&w=600",
+      title: "Thermal Systems Engineer",
+      details: "Experience: 2+ Years",
+      location: "Chennai",
+      description:
+        "Analyze and design thermal management systems for EV batteries to maintain performance and safety.",
+    },
+    {
+      img: "https://images.pexels.com/photos/8940473/pexels-photo-8940473.jpeg?auto=compress&cs=tinysrgb&w=600",
+      title: "Battery Cell Research Scientist",
+      details: "Experience: 2+ Years",
+      location: "Hyderabad",
+      description:
+        "Conduct research to develop next-generation battery cell chemistries and improve energy density",
+    },
+    {
+      img: "https://images.pexels.com/photos/19895881/pexels-photo-19895881/free-photo-of-factory-worker-in-a-safety-helmet.jpeg?auto=compress&cs=tinysrgb&w=600",
+      title: "Quality Assurance Engineer",
       details: "Experience: 2+ Years",
       location: "Delhi",
       description:
-        "Responsible for analyzing data and providing insights to support business decisions.",
-    },
-    {
-      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
-      title: "Data Analyst",
-      details: "Experience: 2+ Years",
-      location: "Delhi",
-      description:
-        "Responsible for analyzing data and providing insights to support business decisions.",
-    },
-    {
-      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=600",
-      title: "Data Analyst",
-      details: "Experience: 2+ Years",
-      location: "Delhi",
-      description:
-        "Responsible for analyzing data and providing insights to support business decisions.",
+        "Conduct quality checks, analyze defects, and implement corrective actions in battery production.",
     },
   ];
 
   const [showAllJobs, setShowAllJobs] = useState(false);
-  const [jobs, setJobs] = useState([]);
-
-  useEffect(() => {
-    const syncJobs = async () => {
-      const allJobs = [...initialJobs, ...additionalJobs];
-      try {
-        const response = await axios.post(
-          "http://localhost:5000/api/job-position",
-          { jobs: allJobs }
-        );
-        if (response.status === 200) {
-          setJobs(response.data.jobs);
-        }
-      } catch (error) {
-        console.error("Error syncing jobs:", error);
-        setJobs(allJobs); // fallback if API fails
-      }
-    };
-    syncJobs();
-  }, []);
+  const allJobs = [...initialJobs, ...additionalJobs];
 
   const toggleJobs = () => {
     setShowAllJobs(!showAllJobs);
   };
 
-  const handleReadMore = (title, details, location, description, img) => {
+  const handleReadMore = (img, title, details, location, description) => {
     navigate(`/job-details/${img}/${title}/${details}/${location}/${description}`);
   };
 
+
+  console.log("Jobs:", showAllJobs);
   return (
     <section className="bg-white py-16 text-gray-900">
       <div className="container mx-auto px-6">
@@ -148,17 +131,20 @@ const JobPositions = () => {
         </h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 justify-center">
-          {(showAllJobs ? jobs : jobs.slice(0, initialJobs.length)).map(
+          {(showAllJobs ?   allJobs : allJobs.slice(0, initialJobs.length)).map(
             (job, index) => (
+              
               <div
                 key={`${job.title}-${index}`}
                 className="bg-white border-l-2 border-[#1e293b] rounded-xl shadow-md p-6 transition duration-300 hover:scale-[1.02] hover:shadow-2xl w-full flex flex-col justify-between h-[370px] w-[320px] mb-10"
               >
+               
                 {job.img && (
                   <img
                     src={job.img}
                     alt={job.title}
-                    className="mb-4 rounded object-cover h-40 w-full"
+                    className="h-40 w-full object-cover rounded border"
+
                   />
                 )}
                 <div>
@@ -181,11 +167,12 @@ const JobPositions = () => {
                 <button
                   onClick={() =>
                     handleReadMore(
+                      job.img,
                       job.title,
                       job.details,
                       job.location,
-                      job.description,
-                      job.img
+                      job.description
+
                     )
                   }
                   className="text-blue-500 underline hover:text-blue-700 mt-4 text-left"
