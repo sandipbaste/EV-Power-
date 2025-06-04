@@ -2,56 +2,59 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-
 const OnlineTest = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  // const {email} = location.state?.email;
-  const { email} = location.state || {}
+  const { state } = useLocation();
+  const { email } = state || {};
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(60 * 0.3); // 60 minutes
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // 30 seconds for testing; change to 60 * 60 for 60 minutes
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userTests, setUserTests] = useState([]);
   const timerRef = useRef(null);
   const selectedAnswersRef = useRef({});
+
+  // Initialize userTests from localStorage
+  useEffect(() => {
+    const savedTests = JSON.parse(localStorage.getItem('userTests') || '[]');
+    setUserTests(savedTests);
+  }, []);
 
   // Fetch questions from backend
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/aptitude');
-        
         if (!response.data || response.data.length === 0) {
           throw new Error('No questions available in the database');
         }
-        
         setQuestions(response.data);
-        setLoading(false);
+        setIsLoading(false);
       } catch (err) {
         console.error('Error fetching questions:', err);
         setError(err.response?.data?.message || err.message);
-        setLoading(false);
+        setIsLoading(false);
       }
     };
-
     fetchQuestions();
   }, []);
 
-  // Update ref whenever selectedAnswers changes
+  // Update ref when selectedAnswers changes
   useEffect(() => {
     selectedAnswersRef.current = selectedAnswers;
   }, [selectedAnswers]);
 
   // Handle form submission
   const handleSubmit = useCallback(() => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     clearInterval(timerRef.current);
-    setIsSubmitted(true);
-    
+
     let correctAnswers = 0;
-    questions.forEach(question => {
+    questions.forEach((question) => {
       if (selectedAnswersRef.current[question._id] === question.answer) {
         correctAnswers++;
       }
@@ -59,49 +62,49 @@ const OnlineTest = () => {
 
     const testResult = {
       questions,
-      selectedAnswers: {...selectedAnswersRef.current},
+      selectedAnswers: { ...selectedAnswersRef.current },
       score: correctAnswers,
       totalQuestions: questions.length,
-      timeSpent: (60 * 60 - timeLeft),
-      percentage: Math.round((correctAnswers / questions.length) * 100),
+      timeSpent: 60 * 60 - timeLeft, // Assuming the original full time was 60*60
+      percentage: questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0,
       testDate: new Date().toISOString(),
-      // email: localStorage.getItem('userEmail') || 'anonymous@example.com'
+      email: email || null, // Store email as-is, null if undefined
     };
 
-    // Save to localStorage
-    const savedTests = JSON.parse(localStorage.getItem('userTests') || '[]');
-    savedTests.unshift(testResult); // Add new test to beginning of array
-    localStorage.setItem('userTests', JSON.stringify(savedTests));
-
-    // Navigate to test history with the new test data
-    navigate('/test-history', { 
-      state: { 
-        email: email,
-        allTests: savedTests,
-        latestTest: testResult,
-        fromTest: true 
-      } 
+    // Update state and localStorage
+    setUserTests((prevTests) => {
+      const updatedTests = [...prevTests, testResult];
+      localStorage.setItem('userTests', JSON.stringify(updatedTests));
+      return updatedTests;
     });
-    // console.log(email)
-  }, [navigate, questions, timeLeft, email]);
+
+    // Navigate to HRDashboard with results tab active
+    navigate('/hr-dashboard', {
+      state: {
+        email,
+        allTests: [...userTests, testResult], // send the most up-to-date userTests
+        latestTest: testResult,
+        activeTab: 'results',
+      },
+    });
+  }, [navigate, questions, timeLeft, email, isSubmitting, userTests]);
 
   // Handle timer countdown
   useEffect(() => {
-    if (!loading && questions.length > 0) {
+    if (!isLoading && questions.length > 0) {
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             clearInterval(timerRef.current);
-            handleSubmit();
+            handleSubmit(); // Call handleSubmit directly
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
     }
-
     return () => clearInterval(timerRef.current);
-  }, [loading, questions, handleSubmit]);
+  }, [isLoading, questions, handleSubmit]);
 
   // Format time as MM:SS
   const formatTime = (seconds) => {
@@ -133,7 +136,7 @@ const OnlineTest = () => {
     setCurrentQuestionIndex(index);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
@@ -149,31 +152,42 @@ const OnlineTest = () => {
       <div className="flex justify-center items-center h-screen">
         <div className="text-center p-6 bg-white rounded-lg shadow-md max-w-md">
           <div className="text-red-500 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 mx-auto"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
-          </div>
-          <h2 className="text-xl font-bold text-gray-800 mb-2">
-            {questions.length === 0 ? 'No Questions Available' : 'Error Loading Questions'}
-          </h2>
-          <p className="text-gray-600 mb-6">
-            {questions.length === 0 
-              ? 'The question bank is currently empty. Please contact the administrator.' 
-              : error}
-          </p>
-          <div className="space-y-3">
-            <button
-              onClick={() => window.location.reload()}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Refresh
-            </button>
-            <button
-              onClick={() => navigate('/')}
-              className="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-            >
-              Return Home
-            </button>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">
+              {questions.length === 0 ? 'No Questions Available' : 'Error Loading Questions'}
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {questions.length === 0
+                ? 'The question bank is currently empty. Please contact the administrator.'
+                : error}
+            </p>
+            <div className="space-y-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Refresh
+              </button>
+              <button
+                onClick={() => navigate('/')}
+                className="w-full px-4 rounded bg-gray-200 text-gray-800 py-2 hover:bg-gray-300"
+              >
+                Return Home
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -186,11 +200,9 @@ const OnlineTest = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Main Question Area */}
           <div className="lg:w-2/3 bg-white rounded-xl shadow-md p-6">
-            {/* Header with timer and progress */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <div>
                 <h1 className="text-2xl font-bold text-gray-800">EV Knowledge Test</h1>
@@ -198,20 +210,16 @@ const OnlineTest = () => {
                   Question {currentQuestionIndex + 1} of {questions.length}
                 </p>
               </div>
-              <div className={`text-xl font-bold px-4 py-2 rounded-lg ${
-                timeLeft <= 300 ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"
-              }`}>
+              <div
+                className={`text-xl font-bold px-4 py-2 rounded-lg ${
+                  timeLeft <= 300 ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
+                }`}
+              >
                 Time Left: {formatTime(timeLeft)}
               </div>
             </div>
-
-            {/* Question Card */}
             <div className="mb-8 p-6 bg-gray-50 rounded-lg">
-              <h2 className="text-xl font-semibold text-gray-800 mb-6">
-                {currentQuestion.text}
-              </h2>
-
-              {/* Options */}
+              <h2 className="text-xl font-semibold text-gray-800 mb-6">{currentQuestion.question}</h2>
               <div className="space-y-4">
                 {currentQuestion.options.map((option, idx) => (
                   <div
@@ -219,16 +227,16 @@ const OnlineTest = () => {
                     onClick={() => handleOptionSelect(currentQuestion._id, option)}
                     className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
                       selectedAnswers[currentQuestion._id] === option
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     <div className="flex items-center">
                       <div
                         className={`w-6 h-6 rounded-full border-2 mr-3 flex items-center justify-center ${
                           selectedAnswers[currentQuestion._id] === option
-                            ? "border-blue-500 bg-blue-500"
-                            : "border-gray-300"
+                            ? 'border-blue-500 bg-blue-500'
+                            : 'border-gray-300'
                         }`}
                       >
                         {selectedAnswers[currentQuestion._id] === option && (
@@ -241,21 +249,18 @@ const OnlineTest = () => {
                 ))}
               </div>
             </div>
-
-            {/* Navigation Buttons */}
             <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-8">
               <button
                 onClick={goToPrevQuestion}
                 disabled={currentQuestionIndex === 0}
                 className={`px-6 py-3 rounded-lg w-full sm:w-auto ${
                   currentQuestionIndex === 0
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
                 ← Previous
               </button>
-              
               <div className="flex gap-3 w-full sm:w-auto">
                 {currentQuestionIndex < questions.length - 1 ? (
                   <button
@@ -267,11 +272,11 @@ const OnlineTest = () => {
                 ) : (
                   <button
                     onClick={handleSubmit}
-                    disabled={!(allQuestionsAnswered || timerEnded)}
+                    disabled={!(allQuestionsAnswered || timerEnded) || isSubmitting}
                     className={`px-6 py-3 rounded-lg w-full ${
                       allQuestionsAnswered || timerEnded
-                        ? "bg-green-600 text-white hover:bg-green-700"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        ? 'bg-green-600 text-white hover:bg-green-700'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                   >
                     Submit Test
@@ -280,8 +285,6 @@ const OnlineTest = () => {
               </div>
             </div>
           </div>
-
-          {/* Question Navigator Sidebar */}
           <div className="lg:w-1/3 bg-white rounded-xl shadow-md p-6 h-fit sticky top-4">
             <div className="mb-6">
               <h3 className="text-lg font-bold text-gray-800 mb-2">Question Navigator</h3>
@@ -292,12 +295,12 @@ const OnlineTest = () => {
                     onClick={() => goToQuestion(index)}
                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                       selectedAnswers[q._id]
-                        ? "bg-green-100 text-green-800 border border-green-300"
-                        : "bg-gray-100 text-gray-800 border border-gray-300"
+                        ? 'bg-green-100 text-green-800 border border-green-300'
+                        : 'bg-gray-100 text-gray-800 border border-gray-300'
                     } ${
-                      currentQuestionIndex === index 
-                        ? "ring-2 ring-blue-500 transform scale-105" 
-                        : "hover:bg-gray-200"
+                      currentQuestionIndex === index
+                        ? 'ring-2 ring-blue-500 transform scale-105'
+                        : 'hover:bg-gray-200'
                     }`}
                   >
                     {index + 1}
@@ -305,24 +308,22 @@ const OnlineTest = () => {
                 ))}
               </div>
             </div>
-
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">Progress</span>
+                <span className="text-sm font-medium text-gray-600">Progress</span>
                 <span className="text-sm text-gray-600">
                   {Object.keys(selectedAnswers).length}/{questions.length}
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
-                  style={{ 
-                    width: `${(Object.keys(selectedAnswers).length / questions.length) * 100}%` 
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                  style={{
+                    width: `${(Object.keys(selectedAnswers).length / questions.length) * 100}%`,
                   }}
                 ></div>
               </div>
             </div>
-
             <div className="space-y-3 mb-6">
               <div className="flex items-center">
                 <div className="w-4 h-4 rounded-full bg-green-100 border border-green-300 mr-2"></div>
@@ -337,17 +338,16 @@ const OnlineTest = () => {
                 <span className="text-sm text-gray-600">Current</span>
               </div>
             </div>
-
             <button
               onClick={handleSubmit}
-              disabled={!(allQuestionsAnswered || timerEnded)}
+              disabled={!(allQuestionsAnswered || timerEnded) || isSubmitting}
               className={`w-full py-3 rounded-lg font-medium ${
                 allQuestionsAnswered || timerEnded
-                  ? "bg-red-600 text-white hover:bg-red-700"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  ? 'bg-red-600 text-white hover:bg-red-700'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              {timerEnded ? "Time's Up! Submit Now" : "Submit Test Now"}
+              {timerEnded ? "Time's Up! Submit Now" : 'Submit Test Now'}
             </button>
           </div>
         </div>
