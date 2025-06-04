@@ -36,7 +36,7 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route exact path="/interviewtest" element={<InterviewTest />} />
-          <Route exact path="/job-details/:img/:title/:details/:location/:description" element={<JobDetails />} />
+          <Route exact path="/job-details" element={<JobDetails />} />
         </Routes>
         <Footer />
       </BrowserRouter>
