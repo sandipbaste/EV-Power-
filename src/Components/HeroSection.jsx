@@ -25,12 +25,6 @@ const HeroSection = () => {
               <span className="font-medium">sustainable career</span> starts
               here!
             </p>
-            {/* <Link
-              to="/join-us"
-              className="inline-block px-8 py-4 bg-gradient-to-r from-blue-400 to-blue-500 text-navy font-bold text-lg rounded-full shadow-lg hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
-            >
-              🚀 Apply Now
-            </Link> */}
 
              <div className="App">
                         <Link

@@ -1,5 +1,5 @@
 import React from "react";
-import img from '../assets/car1.png'
+import img from '../assets/EVPOWER.jpeg'
 import { FileText, BrainCircuit, MessagesSquare, Handshake } from 'lucide-react';
 
 const About = () => {

@@ -52,13 +52,13 @@ const Navbar = () => {
           <div className="hidden md:flex gap-3">
             <button
               onClick={() => setIsJoinModalOpen(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
+              className="bg-gradient-to-r from-blue-100 to-blue-500 text-navy font-bold  px-4 py-2 rounded hover:bg-blue-500 hover:from-blue-500  transform transition-all duration-300 hover:scale-105"
             >
               Join Us
             </button>
             <button
               onClick={() => setIsLoginModalOpen(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
+              className="bg-gradient-to-r from-blue-100 to-blue-500 text-navy font-bold px-4 py-2 rounded hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
             >
               Login
             </button>
