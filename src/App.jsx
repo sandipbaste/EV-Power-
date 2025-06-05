@@ -6,7 +6,7 @@ import ApplicationFormModal from './Components/ApplicationFormModal'
 import OnlineTest from './Components/OnlineTest'
 import About from './Components/About'
 import EmployeeBenefits from './Components/EmployeeBenefits'
-import FormResponce from './Components/FormResponce'
+// import FormResponce from './Components/FormResponce'
 import Footer from './Components/Footer'
 import JobPositions from './Components/JobPositions'
 import ExperienceForm from './Components/ExperienceForm'
@@ -31,7 +31,7 @@ const App = () => {
             <Route exact path='/about' element={<About />} />
             <Route exact path='/emp-benefits' element={<EmployeeBenefits />} />
             <Route exact path='/join-us' element={<ApplicationFormModal />} />
-            <Route exact path='/form-respones' element={<FormResponce />} />
+            {/* <Route exact path='/form-respones' element={<FormResponce />} /> */}
             <Route path="/" element={<JobPositions />} />
             <Route path="/experience-form/:title/:details/:location" element={<ExperienceForm />} />
             <Route path="/user-aptitude-login" element={ <AptitudeLogin/> } />
