@@ -56,7 +56,7 @@ const AptitudeLogin = () => {
   return (
     <>
       <ToastContainer />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-2000 to-indigo-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-md">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-center">
             <h1 className="text-3xl font-bold text-white">Login</h1>

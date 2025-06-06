@@ -16,6 +16,9 @@ import SignUp from './Components/SignUp';
 import Login from './Components/Login';
 import InterviewTest from './Components/InterviewTest';
 import JobDetails from './Components/JobDetails';
+import HRDashboard from './Components/HRDashboard'
+import AdminDasboard from './Components/AdminDashboard'
+import AdminDashboard from './Components/AdminDashboard';
 
 const App = () => {
   return (
@@ -37,6 +40,8 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route exact path="/interviewtest" element={<InterviewTest />} />
           <Route exact path="/job-details" element={<JobDetails />} />
+          <Route exact path="/hr-dashboard" element={<HRDashboard />} />
+          <Route exact path="/admindashboard" element={<AdminDashboard />} />
         </Routes>
         <Footer />
       </BrowserRouter>

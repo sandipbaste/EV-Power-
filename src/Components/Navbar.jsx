@@ -42,20 +42,20 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <ul className="hidden md:flex gap-8 text-base font-semibold">
+          {/* <ul className="hidden md:flex gap-8 text-base font-semibold">
             <li><Link to="/" className="hover:text-blue-200">Home</Link></li>
             <li><Link to="/about" className="hover:text-blue-200">About</Link></li>
             <li><Link to="/emp-benefits" className="hover:text-blue-200">Employee Benefits</Link></li>
-          </ul>
+          </ul> */}
 
           {/* Buttons */}
           <div className="hidden md:flex gap-3">
-            <button
+            {/* <button
               onClick={() => setIsJoinModalOpen(true)}
              className="hidden md:block bg-gradient-to-r from-blue-300 to-blue-400 text-navy font-bold px-4 py-2 rounded-lg shadow-md hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
             >
               Join Us
-            </button>
+            </button> */}
             <button
               onClick={() => setIsLoginModalOpen(true)}
               className="hidden md:block bg-gradient-to-r from-blue-300 to-blue-400 text-navy font-bold px-4 py-2 rounded-lg shadow-md hover:from-blue-500 hover:to-blue-600 transform transition-all duration-300 hover:scale-105"
