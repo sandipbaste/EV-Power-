@@ -9,13 +9,16 @@ const OnlineTest = () => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // 30 seconds for testing; change to 60 * 60 for 60 minutes
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userTests, setUserTests] = useState([]);
+  const [videoError, setVideoError] = useState(null);
   const timerRef = useRef(null);
   const selectedAnswersRef = useRef({});
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
 
   // Initialize userTests from localStorage
   useEffect(() => {
@@ -42,6 +45,32 @@ const OnlineTest = () => {
     fetchQuestions();
   }, []);
 
+  // Initialize webcam
+  useEffect(() => {
+    const startVideo = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (err) {
+        console.error('Error accessing webcam:', err);
+        setVideoError('Unable to access webcam. Please ensure camera permissions are granted.');
+      }
+    };
+    startVideo();
+
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
   // Update ref when selectedAnswers changes
   useEffect(() => {
     selectedAnswersRef.current = selectedAnswers;
@@ -65,24 +94,27 @@ const OnlineTest = () => {
       selectedAnswers: { ...selectedAnswersRef.current },
       score: correctAnswers,
       totalQuestions: questions.length,
-      timeSpent: 60 * 60 - timeLeft, // Assuming the original full time was 60*60
+      timeSpent: 60 * 60 - timeLeft,
       percentage: questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0,
       testDate: new Date().toISOString(),
-      email: email || null, // Store email as-is, null if undefined
+      email: email || null,
     };
 
-    // Update state and localStorage
     setUserTests((prevTests) => {
       const updatedTests = [...prevTests, testResult];
       localStorage.setItem('userTests', JSON.stringify(updatedTests));
       return updatedTests;
     });
 
-    // Navigate to HRDashboard with results tab active
+    // Stop webcam stream
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+    }
+
     navigate('/hr-dashboard', {
       state: {
         email,
-        allTests: [...userTests, testResult], // send the most up-to-date userTests
+        allTests: [...userTests, testResult],
         latestTest: testResult,
         activeTab: 'results',
       },
@@ -96,7 +128,7 @@ const OnlineTest = () => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             clearInterval(timerRef.current);
-            handleSubmit(); // Call handleSubmit directly
+            handleSubmit();
             return 0;
           }
           return prev - 1;
@@ -203,6 +235,19 @@ const OnlineTest = () => {
       <div className="max-w-7xl mx-auto py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-2/3 bg-white rounded-xl shadow-md p-6">
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-2">Webcam Feed</h3>
+              {videoError ? (
+                <div className="text-red-500 text-sm">{videoError}</div>
+              ) : (
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  className="w-full h-64 rounded-lg object-cover"
+                />
+              )}
+            </div>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <div>
                 <h1 className="text-2xl font-bold text-gray-800">EV Knowledge Test</h1>
@@ -357,3 +402,4 @@ const OnlineTest = () => {
 };
 
 export default OnlineTest;
+

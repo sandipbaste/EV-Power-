@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const JobDetails = () => {
   const { state } = useLocation();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   if (!state) {
     return (
