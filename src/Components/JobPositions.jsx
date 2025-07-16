@@ -1,108 +1,166 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Briefcase, MapPin, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 const JobPositions = () => {
-  useEffect(() => {
-    const syncJobs = async () => {
-      const allJobs = [...initialJobs, ...additionalJobs];
-      try {
-        const response = await axios.post('http://localhost:5000/api/job-position', { jobs: allJobs });
-        if (response.status === 200) {
-          setJobs(response.data.jobs); // Set jobs returned by backend
-        }
-      } catch (error) {
-        console.error("Error syncing jobs:", error);
-      }
-    };
-    syncJobs();
-  }, []);
   const navigate = useNavigate();
 
-  const initialJobs = [
-    { title: "Software Engineer", details: "Experience: 2+ Years", location: "Pune" },
-    { title: "Battery Technician", details: "Experience: 1+ Years", location: "Chennai" },
-    { title: "HR Manager", details: "Experience: 3+ Years", location: "Mumbai" },
-  ];
-
-  const additionalJobs = [
-    { title: "Marketing Specialist", details: "Experience: 2+ Years", location: "Banglore" },
-    { title: "Electrical Engineer", details: "Experience: 3+ Years", location: "Pune" },
-    { title: "Customer Support", details: "Experience: 1+ Years", location: "Nashik" },
-    { title: "Sales Executive", details: "Experience: 2+ Years", location: "Nashik" },
-    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Pune" },
-    { title: "Data Analyst", details: "Experience: 2+ Years", location: "Delhi" },
+  const allJobs = [
+    {
+      img: "https://images.pexels.com/photos/3182773/pexels-photo-3182773.jpeg",
+      title: "Software Engineer",
+      details: "Experience: 2+ Years",
+      location: "Pune",
+      description: "Responsible for designing, developing, testing, and maintaining software applications.",
+    },
+    {
+      img: "https://images.pexels.com/photos/9243229/pexels-photo-9243229.jpeg",
+      title: "Battery Technician",
+      details: "Experience: 1+ Years",
+      location: "Chennai",
+      description: "Responsible for assembling, testing, and maintaining battery systems.",
+    },
+    {
+      img: "https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg",
+      title: "HR Manager",
+      details: "Experience: 3+ Years",
+      location: "Mumbai",
+      description: "Manage recruitment, employee relations, and performance management.",
+    },
+    {
+      img: "https://images.pexels.com/photos/5292195/pexels-photo-5292195.jpeg",
+      title: "Battery Design Engineer",
+      details: "Experience: 3+ Years",
+      location: "Bengaluru",
+      description: "Design and prototype lithium-ion battery packs and modules.",
+    },
+    {
+      img: "https://images.pexels.com/photos/5716001/pexels-photo-5716001.jpeg",
+      title: "Marketing Specialist",
+      details: "Experience: 2+ Years",
+      location: "Banglore",
+      description: "Develop and execute marketing strategies to promote products.",
+    },
+    {
+      img: "https://images.pexels.com/photos/9242289/pexels-photo-9242289.jpeg",
+      title: "Electrical Engineer",
+      details: "Experience: 3+ Years",
+      location: "Pune",
+      description: "Design and test electrical systems and components.",
+    },
+    {
+      img: "https://images.pexels.com/photos/7682340/pexels-photo-7682340.jpeg",
+      title: "Customer Support",
+      details: "Experience: 1+ Years",
+      location: "Nashik",
+      description: "Support customers via phone, email, and chat.",
+    },
+    {
+      img: "https://images.pexels.com/photos/8463145/pexels-photo-8463145.jpeg",
+      title: "Sales Executive",
+      details: "Experience: 2+ Years",
+      location: "Nashik",
+      description: "Sell products and services to customers.",
+    },
+    {
+      img: "https://images.pexels.com/photos/19226354/pexels-photo-19226354.jpeg",
+      title: "BMS Engineer",
+      details: "Experience: 2+ Years",
+      location: "Pune",
+      description: "Maintain battery monitoring systems and safety firmware.",
+    },
+    {
+      img: "https://images.pexels.com/photos/3862630/pexels-photo-3862630.jpeg",
+      title: "Thermal Systems Engineer",
+      details: "Experience: 2+ Years",
+      location: "Chennai",
+      description: "Design thermal management systems for EV batteries.",
+    },
+    {
+      img: "https://images.pexels.com/photos/8940473/pexels-photo-8940473.jpeg",
+      title: "Battery Research Scientist",
+      details: "Experience: 2+ Years",
+      location: "Hyderabad",
+      description: "Research next-gen battery chemistries and density.",
+    },
+    {
+      img: "https://images.pexels.com/photos/19895881/pexels-photo-19895881.jpeg",
+      title: "QA Engineer",
+      details: "Experience: 2+ Years",
+      location: "Delhi",
+      description: "Perform QA checks and resolve battery production defects.",
+    },
   ];
 
   const [showAllJobs, setShowAllJobs] = useState(false);
-  const [jobs, setJobs] = useState(initialJobs);
 
   const toggleJobs = () => {
-    if (showAllJobs) {
-      setJobs(jobs.slice(0, initialJobs.length)); // Show only initial
-    } else {
-      setJobs(jobs); // Show all (already fetched from backend)
-    }
-    setShowAllJobs(!showAllJobs);
+    setShowAllJobs((prev) => !prev);
   };
 
-  const handleApplyNow = (title, details, location) => {
-    navigate(`/experience-form/${title}/${details}/${location}`);
+  const handleReadMore = (job) => {
+    navigate("/job-details", { state: job });
   };
-
-  // 🔁 Sync jobs to backend on mount
-  
 
   return (
-    <section className="bg-white py-16 text-gray-900">
-    <div className="container mx-auto px-6">
-      <h2 className="text-4xl font-extrabold text-center mb-12 text-[#1e293b]">
-        Current Job Positions
-      </h2>
+    <section className="bg-white py-10">
+      <div className="max-w-7xl mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
+          Current Job Positions
+        </h2>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {(showAllJobs ? jobs : jobs.slice(0, initialJobs.length)).map((job, index) => (
-          <div
-            key={`${job.index}-${job.location}-${index}`}
-            className="bg-white border-l-8 border-[#1e293b] rounded-xl shadow-md p-6 transition duration-300 hover:scale-[1.02] hover:shadow-2xl"
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <Briefcase className="text-[#1e293b]" />
-              <h3 className="text-xl font-bold">{job.title}</h3>
-            </div>
-            <div className="text-sm text-gray-700 flex flex-col gap-2 mb-6">
-              <div className="flex items-center gap-2">
-                <Clock size={16} className="text-[#1e293b]" />
-                <span>{job.details}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin size={16} className="text-[#1e293b]" />
-                <span>{job.location}</span>
-              </div>
-            </div>
-            <button
-              onClick={() => handleApplyNow(job.title, job.details, job.location)}
-              className="w-full bg-[#1e293b] hover:bg-[#334155] text-[#FFD700] font-semibold py-2 rounded-lg shadow-md transition duration-300"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {(showAllJobs ? allJobs : allJobs.slice(0, 4)).map((job, index) => (
+            <div
+              key={index}
+              className="bg-white border rounded-lg shadow hover:shadow-lg transition duration-300 p-4 flex flex-col justify-between h-[280px]"
             >
-              Apply Now
+              <img
+                src={job.img}
+                alt={job.title}
+                className="h-28 w-full object-cover rounded mb-3"
+              />
+
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Briefcase size={18} className="text-gray-700" />
+                  <h3 className="text-lg font-semibold text-gray-800">{job.title}</h3>
+                </div>
+                <div className="text-sm text-gray-600 mt-2 space-y-1">
+                  <div className="flex items-center gap-1">
+                    <Clock size={14} />
+                    <span>{job.details}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MapPin size={14} />
+                    <span>{job.location}</span>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleReadMore(job)}
+                className="text-sm text-blue-600 mt-3 hover:underline"
+              >
+                View Job...
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {allJobs.length > 4 && (
+          <div className="text-center mt-8">
+            <button
+              onClick={toggleJobs}
+              className="bg-blue-500 text-white px-5 py-2 rounded hover:bg-blue-600 transition"
+            >
+              {showAllJobs ? "Show Less" : "View More"}
             </button>
           </div>
-        ))}
+        )}
       </div>
-
-      <div className="flex justify-center mt-10">
-        <button
-          onClick={toggleJobs}
-          className="px-6 py-2 bg-[#FFD700] hover:bg-yellow-500 text-[#1e293b] font-semibold rounded-lg shadow-md transition duration-300"
-        >
-          {showAllJobs ? "Show Less" : "View More"}
-        </button>
-      </div>
-    </div>
-  </section>
+    </section>
   );
-}
+};
 
 export default JobPositions;
-  
